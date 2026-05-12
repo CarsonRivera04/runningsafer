@@ -1,8 +1,8 @@
+# app/main.py
 from fastapi import FastAPI
-from app.schemas import Status  # Clean import thanks to __init__.py
+from app.api.v1.api import api_router
 
-app = FastAPI()
+app = FastAPI(title="My Project API")
 
-@app.get("/api/py/healthcheck", response_model=Status)
-async def healthcheck():
-    return {"message": "Backend is connected!", "status": "ok"}
+# This includes all v1 routes under the /api base path
+app.include_router(api_router, prefix="/api")

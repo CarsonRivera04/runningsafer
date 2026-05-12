@@ -1,2 +1,4 @@
 data/
 backend/.env
+
+backend/app/__pycache__/
