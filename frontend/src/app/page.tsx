@@ -1,32 +1,20 @@
-export default async function MyNextFastAPIApp() {
-  const role = await fetchEngineerRole('data scientist');
+import { getHealthStatus } from "@/lib/api-client";
 
-  if (!role) {
-    return <div>Failed to load engineer role data.</div>;
-  }
+export default async function HomePage() {
+  const data = await getHealthStatus();
 
   return (
-    <>
-      <div>{`The main skill of a ${role.title} is ${role.mainskill}.`}</div>
-    </>
+    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1>Frontend + FastAPI Connection</h1>
+      <div style={{ 
+        padding: '1rem', 
+        border: '1px solid #ccc', 
+        borderRadius: '8px',
+        backgroundColor: data.status === 'ok' ? '#e6fffa' : '#fff5f5'
+      }}>
+        <p><strong>Message from Backend:</strong> {data.message}</p>
+        <p><strong>Status:</strong> {data.status}</p>
+      </div>
+    </main>
   );
-}
-
-async function fetchEngineerRole(title: string) {
- 
-  const baseUrl: string = "http://localhost:3000";
-
-  try {
-    const response = await fetch(
-      `${baseUrl}/api/py/engineer-roles?title=${title}`
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch data");
-    }
-    const role = await response.json();
-    return role;
-  } catch (error) {
-    console.error("Error fetching engineer role:", error);
-    return null;
-  }
 }

@@ -1,2 +1,2 @@
-data/postgis/
-backend/api/__pycache__/
+data/
+backend/.env
