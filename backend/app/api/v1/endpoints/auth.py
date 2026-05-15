@@ -11,7 +11,7 @@ router = APIRouter()
 # Replace these with your Strava App credentials
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = "http://localhost:3000/api/py/callback" # redirects to nextjs
+REDIRECT_URI = "http://localhost:8000/api/auth/callback"
 STRAVA_AUTH_URL = "https://www.strava.com/oauth/authorize"
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 
