@@ -1,8 +1,11 @@
 import os
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
+from sqlalchemy.orm import Session
+from app.core.database import get_db
+from app.models.user import User
 
 load_dotenv()
 
@@ -32,11 +35,7 @@ async def login():
     return RedirectResponse(url)
 
 @router.get("/callback")
-async def callback(code: str):
-    """
-    Step 2: Strava redirects back here with a 'code'.
-    Step 3: Exchange that code for an Access Token and Refresh Token.
-    """
+async def callback(code: str, db: Session = Depends(get_db)):
     if not code:
         raise HTTPException(status_code=400, detail="Authorization code not found")
 
@@ -51,16 +50,38 @@ async def callback(code: str):
         response = await client.post(STRAVA_TOKEN_URL, data=payload)
         
     if response.status_code != 200:
-        raise HTTPException(status_code=400, detail="Failed to retrieve token from Strava")
+        raise HTTPException(status_code=400, detail="Failed to retrieve token")
 
     token_data = response.json()
+    athlete = token_data["athlete"]
+
+    # --- DATABASE LOGIC ---
+    # Check if user exists, if so update. If not, create.
+    user = db.query(User).filter(User.id == athlete["id"]).first()
     
-    # token_data contains: access_token, refresh_token, expires_at, and athlete info
-    # In a real app, you should save these to a database indexed by user
-    return {
-        "message": "Successfully authenticated!",
-        "access_token": token_data["access_token"],
-        "refresh_token": token_data["refresh_token"],
-        "expires_at": token_data["expires_at"],
-        "athlete": token_data["athlete"]
-    }
+    if not user:
+        user = User(
+            id=athlete["id"],
+            firstname=athlete.get("firstname"),
+            lastname=athlete.get("lastname"),
+            access_token=token_data["access_token"],
+            refresh_token=token_data["refresh_token"],
+            expires_at=token_data["expires_at"]
+        )
+        db.add(user)
+    else:
+        # Update tokens for returning user
+        user.access_token = token_data["access_token"]
+        user.refresh_token = token_data["refresh_token"]
+        user.expires_at = token_data["expires_at"]
+    
+    db.commit()
+
+    # --- THE REDIRECT ---
+    # This sends the browser back to your Next.js home page
+    response = RedirectResponse(url="http://localhost:3000/")
+    
+    # Optional: Set a cookie so Next.js knows who is logged in
+    # response.set_cookie(key="user_id", value=str(athlete["id"]), httponly=True)
+    
+    return response
