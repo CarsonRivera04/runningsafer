@@ -1,6 +1,9 @@
 import os
+import time
 import httpx
-from fastapi import APIRouter, HTTPException, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, Depends, Cookie
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
@@ -82,6 +85,59 @@ async def callback(code: str, db: Session = Depends(get_db)):
     response = RedirectResponse(url="http://localhost:3000/")
     
     # httponly cookie to store user_id (change to jwt in production)
-    response.set_cookie(key="user_id", value=str(athlete["id"]), httponly=True)
+    response.set_cookie(
+        key="user_id",
+        value=str(athlete["id"]),
+        httponly=True,
+        samesite="lax",
+        path="/",
+    )
     
     return response
+
+@router.get("/me")
+async def get_current_user(
+    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
+    db: Session =  Depends(get_db)
+):
+    """
+    Checks the incoming HttpOnly cookie to see if the user has a valid session.
+    """
+    if not user_id: 
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if not user: 
+        raise HTTPException(status_code=401, detail="User not found")
+
+    current_time = int(time.time())
+    # token is expired 
+    if user.expires_at < current_time:
+        await refresh_strava_token(user, db)
+
+    return {
+        "isAuthenticated": True,
+        "user": {
+            "id": user.id,
+            "firstname": user.firstname,
+            "lastname": user.lastname
+        }
+    }
+
+async def refresh_strava_token(user: User, db: Session):
+    """Helper function to refresh Strava tokens"""
+    payload = {
+        "client_id": CLIENT_ID,
+        "client_secret": CLIENT_SECRET,
+        "grant_type": "refresh_token",
+        "refresh_token": user.refresh_token
+    }
+    async with httpx.AsyncClient() as client:
+        response = await client.post(STRAVA_TOKEN_URL, data=payload)
+        
+    if response.status_code == 200:
+        data = response.json()
+        user.access_token = data["access_token"]
+        user.refresh_token = data["refresh_token"]
+        user.expires_at = data["expires_at"]
+        db.commit()
