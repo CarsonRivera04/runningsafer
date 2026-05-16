@@ -11,7 +11,6 @@ load_dotenv()
 
 router = APIRouter()
 
-# Replace these with your Strava App credentials
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:8000/api/py/auth/callback"
@@ -21,7 +20,7 @@ STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 @router.get("/login")
 async def login():
     """
-    Step 1: Redirect the user to Strava's authorization page.
+    Redirect the user to Strava's authorization page.
     """
     params = {
         "client_id": CLIENT_ID,
@@ -36,6 +35,9 @@ async def login():
 
 @router.get("/callback")
 async def callback(code: str, db: Session = Depends(get_db)):
+    """
+    Handle the callback from Strava after user authorization.
+    """
     if not code:
         raise HTTPException(status_code=400, detail="Authorization code not found")
 
@@ -55,7 +57,6 @@ async def callback(code: str, db: Session = Depends(get_db)):
     token_data = response.json()
     athlete = token_data["athlete"]
 
-    # --- DATABASE LOGIC ---
     # Check if user exists, if so update. If not, create.
     user = db.query(User).filter(User.id == athlete["id"]).first()
     
@@ -77,11 +78,10 @@ async def callback(code: str, db: Session = Depends(get_db)):
     
     db.commit()
 
-    # --- THE REDIRECT ---
-    # This sends the browser back to your Next.js home page
+    # sends the browser back to your Next.js home page
     response = RedirectResponse(url="http://localhost:3000/")
     
-    # Optional: Set a cookie so Next.js knows who is logged in
-    # response.set_cookie(key="user_id", value=str(athlete["id"]), httponly=True)
+    # httponly cookie to store user_id (change to jwt in production)
+    response.set_cookie(key="user_id", value=str(athlete["id"]), httponly=True)
     
     return response
