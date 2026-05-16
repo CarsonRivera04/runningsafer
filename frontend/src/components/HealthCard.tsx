@@ -1,5 +1,5 @@
 // app/components/HealthCard.tsx
-export function HealthCard({ data }: { data: any }) {
+export function HealthCard({ data }: { data: unknown }) {
   return (
     <div>
       <h2>System Health</h2>

@@ -141,3 +141,30 @@ async def refresh_strava_token(user: User, db: Session):
         user.refresh_token = data["refresh_token"]
         user.expires_at = data["expires_at"]
         db.commit()
+
+@router.get("/activities")
+async def get_activities(
+    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
+    db: Session = Depends(get_db)
+):
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    user = db.query(User).filter(User.id == int(user_id)).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    current_time = int(time.time())
+    if user.expires_at < current_time:
+        await refresh_strava_token(user, db)
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            "https://www.strava.com/api/v3/athlete/activities",
+            headers={"Authorization": f"Bearer {user.access_token}"}
+        )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+    return response.json()
