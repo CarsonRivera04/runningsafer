@@ -1,5 +1,4 @@
 import os
-import time
 import httpx
 from typing import Annotated
 
@@ -10,6 +9,8 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.user import User
 
+from app.utils.auth import create_user_session, get_authenticated_user
+
 load_dotenv()
 
 router = APIRouter()
@@ -19,6 +20,11 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:8000/api/py/auth/callback"
 STRAVA_AUTH_URL = "https://www.strava.com/oauth/authorize"
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
+SESSION_COOKIE_NAME = "session"
+SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true"
+
+
 
 @router.get("/login")
 async def login():
@@ -80,41 +86,33 @@ async def callback(code: str, db: Session = Depends(get_db)):
         user.expires_at = token_data["expires_at"]
     
     db.commit()
+    db.refresh(user)
 
     # sends the browser back to your Next.js home page
     response = RedirectResponse(url="http://localhost:3000/")
+    session_token = create_user_session(user, db)
     
-    # httponly cookie to store user_id (change to jwt in production)
+    # Store only an opaque session token in the browser. The DB stores its hash.
     response.set_cookie(
-        key="user_id",
-        value=str(athlete["id"]),
+        key=SESSION_COOKIE_NAME,
+        value=session_token,
         httponly=True,
+        secure=SESSION_COOKIE_SECURE,
         samesite="lax",
         path="/",
+        max_age=SESSION_DURATION_SECONDS,
     )
+    response.delete_cookie(key="user_id", path="/")
     
     return response
 
 @router.get("/me")
 async def get_current_user(
-    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
-    db: Session =  Depends(get_db)
+    user: Annotated[User, Depends(get_authenticated_user)]
 ):
     """
     Checks the incoming HttpOnly cookie to see if the user has a valid session.
     """
-    if not user_id: 
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    if not user: 
-        raise HTTPException(status_code=401, detail="User not found")
-
-    current_time = int(time.time())
-    # token is expired 
-    if user.expires_at < current_time:
-        await refresh_strava_token(user, db)
-
     return {
         "isAuthenticated": True,
         "user": {
@@ -124,40 +122,12 @@ async def get_current_user(
         }
     }
 
-async def refresh_strava_token(user: User, db: Session):
-    """Helper function to refresh Strava tokens"""
-    payload = {
-        "client_id": CLIENT_ID,
-        "client_secret": CLIENT_SECRET,
-        "grant_type": "refresh_token",
-        "refresh_token": user.refresh_token
-    }
-    async with httpx.AsyncClient() as client:
-        response = await client.post(STRAVA_TOKEN_URL, data=payload)
-        
-    if response.status_code == 200:
-        data = response.json()
-        user.access_token = data["access_token"]
-        user.refresh_token = data["refresh_token"]
-        user.expires_at = data["expires_at"]
-        db.commit()
+
 
 @router.get("/activities")
 async def get_activities(
-    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
-    db: Session = Depends(get_db)
+    user: Annotated[User, Depends(get_authenticated_user)]
 ):
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-
-    current_time = int(time.time())
-    if user.expires_at < current_time:
-        await refresh_strava_token(user, db)
-
     async with httpx.AsyncClient() as client:
         response = await client.get(
             "https://www.strava.com/api/v3/athlete/activities",

@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from app.api.v1.api import api_router
 from app.core.database import Base, engine
-from app.models import user
+from app.models import session, user
 
 app = FastAPI(title="Safer Strava API", docs_url="/api/py/docs")
 
