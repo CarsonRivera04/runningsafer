@@ -9,7 +9,11 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.models.user import User
 
-from app.utils.auth import create_user_session, get_authenticated_user
+from app.utils.auth import (
+    create_user_session,
+    delete_user_session,
+    get_authenticated_user,
+)
 
 load_dotenv()
 
@@ -106,6 +110,26 @@ async def callback(code: str, db: Session = Depends(get_db)):
     
     return response
 
+
+@router.post("/logout")
+async def logout(
+    session_token: Annotated[str | None, Cookie(alias=SESSION_COOKIE_NAME)] = None,
+    db: Session = Depends(get_db),
+):
+    """End the current session and clear the session cookie."""
+    delete_user_session(session_token, db)
+
+    response = RedirectResponse(url="http://localhost:3000/login", status_code=302)
+    response.delete_cookie(
+        key=SESSION_COOKIE_NAME,
+        path="/",
+        httponly=True,
+        secure=SESSION_COOKIE_SECURE,
+        samesite="lax",
+    )
+    return response
+
+
 @router.get("/me")
 async def get_current_user(
     user: Annotated[User, Depends(get_authenticated_user)]
@@ -121,7 +145,6 @@ async def get_current_user(
             "lastname": user.lastname
         }
     }
-
 
 
 @router.get("/activities")
