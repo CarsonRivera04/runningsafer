@@ -1,6 +1,8 @@
 import os
 import time
+import hashlib
 import httpx
+import secrets
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Depends, Cookie
@@ -8,6 +10,7 @@ from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
 from app.core.database import get_db
+from app.models.session import UserSession
 from app.models.user import User
 
 load_dotenv()
@@ -19,6 +22,56 @@ CLIENT_SECRET = os.getenv("CLIENT_SECRET")
 REDIRECT_URI = "http://localhost:8000/api/py/auth/callback"
 STRAVA_AUTH_URL = "https://www.strava.com/oauth/authorize"
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
+SESSION_COOKIE_NAME = "session"
+SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30
+SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true"
+
+
+def hash_session_token(token: str) -> str:
+    return hashlib.sha256(token.encode()).hexdigest()
+
+
+def create_user_session(user: User, db: Session) -> str:
+    session_token = secrets.token_urlsafe(32)
+    session = UserSession(
+        token_hash=hash_session_token(session_token),
+        user_id=user.id,
+        expires_at=int(time.time()) + SESSION_DURATION_SECONDS,
+    )
+    db.add(session)
+    db.commit()
+
+    return session_token
+
+
+async def get_authenticated_user(
+    session_token: Annotated[str | None, Cookie(alias=SESSION_COOKIE_NAME)] = None,
+    db: Session = Depends(get_db),
+) -> User:
+    if not session_token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
+    session = db.query(UserSession).filter(
+        UserSession.token_hash == hash_session_token(session_token)
+    ).first()
+
+    if not session:
+        raise HTTPException(status_code=401, detail="Invalid session")
+
+    if session.expires_at < int(time.time()):
+        db.delete(session)
+        db.commit()
+        raise HTTPException(status_code=401, detail="Session expired")
+
+    user = db.query(User).filter(User.id == session.user_id).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="User not found")
+
+    current_time = int(time.time())
+    if user.expires_at < current_time:
+        await refresh_strava_token(user, db)
+
+    return user
 
 @router.get("/login")
 async def login():
@@ -80,41 +133,33 @@ async def callback(code: str, db: Session = Depends(get_db)):
         user.expires_at = token_data["expires_at"]
     
     db.commit()
+    db.refresh(user)
 
     # sends the browser back to your Next.js home page
     response = RedirectResponse(url="http://localhost:3000/")
+    session_token = create_user_session(user, db)
     
-    # httponly cookie to store user_id (change to jwt in production)
+    # Store only an opaque session token in the browser. The DB stores its hash.
     response.set_cookie(
-        key="user_id",
-        value=str(athlete["id"]),
+        key=SESSION_COOKIE_NAME,
+        value=session_token,
         httponly=True,
+        secure=SESSION_COOKIE_SECURE,
         samesite="lax",
         path="/",
+        max_age=SESSION_DURATION_SECONDS,
     )
+    response.delete_cookie(key="user_id", path="/")
     
     return response
 
 @router.get("/me")
 async def get_current_user(
-    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
-    db: Session =  Depends(get_db)
+    user: Annotated[User, Depends(get_authenticated_user)]
 ):
     """
     Checks the incoming HttpOnly cookie to see if the user has a valid session.
     """
-    if not user_id: 
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    if not user: 
-        raise HTTPException(status_code=401, detail="User not found")
-
-    current_time = int(time.time())
-    # token is expired 
-    if user.expires_at < current_time:
-        await refresh_strava_token(user, db)
-
     return {
         "isAuthenticated": True,
         "user": {
@@ -144,20 +189,8 @@ async def refresh_strava_token(user: User, db: Session):
 
 @router.get("/activities")
 async def get_activities(
-    user_id: Annotated[str | None, Cookie(alias="user_id")] = None,
-    db: Session = Depends(get_db)
+    user: Annotated[User, Depends(get_authenticated_user)]
 ):
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-
-    user = db.query(User).filter(User.id == int(user_id)).first()
-    if not user:
-        raise HTTPException(status_code=401, detail="User not found")
-
-    current_time = int(time.time())
-    if user.expires_at < current_time:
-        await refresh_strava_token(user, db)
-
     async with httpx.AsyncClient() as client:
         response = await client.get(
             "https://www.strava.com/api/v3/athlete/activities",
