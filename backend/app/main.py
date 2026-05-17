@@ -1,8 +1,12 @@
 # app/main.py
 from fastapi import FastAPI
 from app.api.v1.api import api_router
+from app.core.database import Base, engine
+from app.models import session, user
 
-app = FastAPI(title="My Project API")
+app = FastAPI(title="Safer Strava API", docs_url="/api/py/docs")
 
 # This includes all v1 routes under the /api base path
-app.include_router(api_router, prefix="/api")
+app.include_router(api_router, prefix="/api/py")
+
+Base.metadata.create_all(bind=engine)
