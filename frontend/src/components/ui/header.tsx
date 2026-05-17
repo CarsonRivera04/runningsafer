@@ -130,7 +130,7 @@ return (
             </NavigationMenuList>
         </NavigationMenu>
         </div>
-        <div className="flex lg:justify-center">
+        <div className="flex lg:justify-center px-4 sm:px-6">
         <p className="font-semibold">TWBlocks</p>
         </div>
         <div className="flex justify-end w-full gap-4">
@@ -138,7 +138,6 @@ return (
             Book a demo
         </Button>
         <div className="border-r hidden md:inline"></div>
-        <Button variant="outline">Sign in</Button>
         <Button onClick={handleLogout}>Logout</Button>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">
@@ -146,7 +145,7 @@ return (
             {isOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </Button>
         {isOpen && (
-            <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8">
+            <div className="absolute top-20 border-t flex flex-col w-full right-0 bg-background shadow-lg py-4 container gap-8 px-4 sm:px-6">
             {navigationItems.map((item) => (
                 <div key={item.title}>
                 <div className="flex flex-col gap-2">
