@@ -67,6 +67,16 @@ const navigationItems = [
 ];
 
 const [isOpen, setOpen] = useState(false);
+
+const handleLogout = async () => {
+    await fetch("/api/py/auth/logout", {
+    method: "POST",
+    credentials: "include",
+    });
+
+    window.location.href = "/login";
+};
+
 return (
     <header className="w-full z-40 fixed top-0 left-0 bg-background">
     <div className="container relative mx-auto min-h-20 flex gap-4 flex-row lg:grid lg:grid-cols-3 items-center">
@@ -129,7 +139,7 @@ return (
         </Button>
         <div className="border-r hidden md:inline"></div>
         <Button variant="outline">Sign in</Button>
-        <Button>Get started</Button>
+        <Button onClick={handleLogout}>Logout</Button>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">
         <Button variant="ghost" onClick={() => setOpen(!isOpen)}>

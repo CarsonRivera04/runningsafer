@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import Image from  "next/image";
 
 export const Feature4 = () => (
-  <div className="w-full py-20 lg:py-40">
+  <div className="w-full py-20 px-4 sm:px-6 lg:py-40">
     <div className="container mx-auto">
       <div className="flex flex-col lg:flex-row gap-10 lg:items-center">
         <div className="flex gap-4 flex-col flex-1">
@@ -22,7 +22,13 @@ export const Feature4 = () => (
             </p>
           </div>
           <a href="/api/py/auth/login">
-            <Image src="/images/btn_strava_connect.png" alt="Connect with Strava" width={200} height={50} className="w-48 h-auto"/>
+            <Image 
+              src="/images/btn_strava_connect.png" 
+              alt="Connect with Strava" 
+              width={200} 
+              height={50} 
+              priority
+              className="w-48 h-auto"/>
           </a>
         </div>
         <div className="bg-muted rounded-md w-full aspect-video h-full flex-1"></div>

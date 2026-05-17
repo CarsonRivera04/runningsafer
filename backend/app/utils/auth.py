@@ -33,6 +33,19 @@ def create_user_session(user: User, db: Session) -> str:
     return session_token
 
 
+def delete_user_session(session_token: str | None, db: Session) -> None:
+    if not session_token:
+        return
+
+    session = db.query(UserSession).filter(
+        UserSession.token_hash == hash_session_token(session_token)
+    ).first()
+
+    if session:
+        db.delete(session)
+        db.commit()
+
+
 async def get_authenticated_user(
     session_token: Annotated[str | None, Cookie(alias=SESSION_COOKIE_NAME)] = None,
     db: Session = Depends(get_db),
