@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Image from  "next/image";
 
 export const Feature4 = () => (
   <div className="w-full py-20 lg:py-40">
@@ -21,9 +22,7 @@ export const Feature4 = () => (
             </p>
           </div>
           <a href="/api/py/auth/login">
-            <Button size="lg" className="gap-4">
-              Auth with Strava 
-            </Button>
+            <Image src="/images/btn_strava_connect.png" alt="Connect with Strava" width={200} height={50} className="w-48 h-auto"/>
           </a>
         </div>
         <div className="bg-muted rounded-md w-full aspect-video h-full flex-1"></div>
