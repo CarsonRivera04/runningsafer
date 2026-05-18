@@ -8,7 +8,7 @@ export default async function Page() {
   const healthData = await getHealthStatus(); // Fetched on the server
   let activityData = null; 
   try {
-    activityData = await getActivityData(1, 30); 
+    activityData = await getActivityData(1, 5); 
   } catch (error) {
     console.error("Failed to fetch activity data:", error);
   }
