@@ -6,7 +6,12 @@ import { Header1 } from "@/components/ui/header";
 
 export default async function Page() {
   const healthData = await getHealthStatus(); // Fetched on the server
-  const activityData = await getActivityData();
+  let activityData = null; 
+  try {
+    activityData = await getActivityData(); 
+  } catch (error) {
+    console.error("Failed to fetch activity data:", error);
+  }
   
 
   return (

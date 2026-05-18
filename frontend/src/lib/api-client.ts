@@ -52,7 +52,7 @@ export async function getActivityData() {
     }
 
     const cookieHeader = await getCookieHeader();
-    const res = await fetch(`${baseUrl}/auth/activities`, {
+    const res = await fetch(`${baseUrl}/strava/activities`, {
       method: 'GET', 
       cache: 'no-store',
       headers: {
