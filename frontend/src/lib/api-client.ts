@@ -44,7 +44,7 @@ export async function getCurrentUser() {
   }
 }
 
-export async function getActivityData() {
+export async function getActivityData(page: number = 1, perPage: number = 30) {
   try {
     const user = await getCurrentUser();
     if (!user.isAuthenticated) {
@@ -52,7 +52,13 @@ export async function getActivityData() {
     }
 
     const cookieHeader = await getCookieHeader();
-    const res = await fetch(`${baseUrl}/auth/activities`, {
+
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: perPage.toString(),
+    });
+
+    const res = await fetch(`${baseUrl}/strava/activities?${params.toString()}`, {
       method: 'GET', 
       cache: 'no-store',
       headers: {
