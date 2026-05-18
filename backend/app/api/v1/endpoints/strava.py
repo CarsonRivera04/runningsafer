@@ -1,4 +1,5 @@
 import httpx
+import polyline
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Annotated
 from app.models.user import User
@@ -41,9 +42,9 @@ async def get_activities(
                 break
 
             for activity in raw_activities:
-                polyline = activity.get("map", {}).get("summary_polyline")
+                summary_polyline = activity.get("map", {}).get("summary_polyline")
                 
-                if activity.get("type") in target_types and polyline:
+                if activity.get("type") in target_types and summary_polyline:
                     simplified_activities.append({
                         "id": activity.get("id"),
                         "name": activity.get("name"),
@@ -52,7 +53,8 @@ async def get_activities(
                         "moving_time": activity.get("moving_time"),
                         "elapsed_time": activity.get("elapsed_time"),
                         "start_date": activity.get("start_date"),
-                        "summary_polyline": polyline,  # Insert the verified polyline
+                        "summary_polyline": summary_polyline,  # Insert the verified polyline
+                        "coordinates": polyline.decode(summary_polyline)  
                     })
 
             # move to the next page of strava results for the next iteration if we still need more items
