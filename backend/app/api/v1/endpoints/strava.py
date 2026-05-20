@@ -15,7 +15,7 @@ async def get_activities(
     per_page: int = 30, # keep requesting until number requested by fronend is met
     page: int = 1
 ):
-    target_types = {"Run", "Ride", "Walk"}
+    target_types = {"Run", "Walk"}
     simplified_activities = []
     required_total_items = page * per_page
     strava_page = 1
