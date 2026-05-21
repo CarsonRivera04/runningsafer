@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { ActivityImg } from "@/components/ActivityImg";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -23,7 +22,7 @@ export interface Feature5Props {
     userName?: string;
 }
 
-export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props) => {
+export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => {
     const hasPreviousPage = page > 1;
     const hasNextPage = activities.length === perPage;
     const previousPage = Math.max(page - 1, 1);
@@ -37,10 +36,10 @@ export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props)
                         <div className="flex gap-4 flex-col items-start">
                             <div className="flex gap-2 flex-col">
                                 <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left mt-2">
-                                    {userName ? `Welcome ${userName}!` : "Welcome!"}
+                                    {name ? `Welcome, ${name}!` : "Welcome!"}
                                 </h2>
                                 <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
-                                    Evaluate the safety of your recent Strava activities. 
+                                    Evaluate the safety of your recent Strava activities.
                                 </p>
                             </div>
                         </div>
@@ -77,12 +76,12 @@ export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props)
                             )}
                         </div>
                     </div>
-                    
+
                     {/* 2. Dynamically mapping over the activities array */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {activities?.map((activity) => (
                             <div key={activity.id} className="flex flex-col gap-2">
-                                <div className="bg-muted rounded-md aspect-video mb-2">
+                                <div className="bg-muted rounded-md aspect-video mb-2 flex items-center justify-center overflow-hidden">
                                     <ActivityImg polyline={activity.summary_polyline} />
                                 </div>
                                 <h3 className="text-xl tracking-tight">{activity.name}</h3>

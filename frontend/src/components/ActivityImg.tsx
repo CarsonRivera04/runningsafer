@@ -5,7 +5,6 @@ export const ActivityImg = ({ polyline }: { polyline: string }) => {
   
   const POLYLINE_UNSAFE = polyline;
   
-  // 2. Safe URL encoding for the polyline string
   const POLYLINE = encodeURIComponent(POLYLINE_UNSAFE);
 
   const USERNAME = "mapbox";
@@ -17,15 +16,13 @@ export const ActivityImg = ({ polyline }: { polyline: string }) => {
   
   const ACCESS_TOKEN = process.env.MAPBOX_ACCESS_TOKEN;
 
-  // 3. Construct the final URL with the access token as a query parameter
   const mapboxImageUrl = `https://api.mapbox.com/styles/v1/${USERNAME}/${STYLE_ID}/static/${OVERLAY}/${OTHER}/${WIDTH}x${HEIGHT}?access_token=${ACCESS_TOKEN}`;
 
   return (
-      <img 
-        src={mapboxImageUrl} 
-        alt="Mapbox static route overlay" 
-        width={WIDTH} 
-        height={HEIGHT}
-      />
+    <img
+      className="w-full h-full object-contain"
+      src={mapboxImageUrl}
+      alt="Mapbox static route overlay"
+    />
   );
 }

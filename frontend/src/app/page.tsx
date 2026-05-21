@@ -22,14 +22,13 @@ export default async function Page({ searchParams }: PageProps) {
   const page = getPageNumber(params?.page);
   const perPage = 6;
   let activityData = [];
-  let userName: string | undefined;
+  let name: string | undefined;
 
   try {
     const currentUser = await getCurrentUser();
     if (currentUser.isAuthenticated && currentUser.user) {
       const firstName = currentUser.user.firstname ?? "";
-      const lastName = currentUser.user.lastname ?? "";
-      userName = `${firstName} ${lastName}`.trim();
+      name = `${firstName}`.trim();
     }
   } catch (error) {
     console.error("Failed to fetch current user:", error);
@@ -45,7 +44,7 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <main>
       <Header1/>
-      <Feature5 activities={activityData} page={page} perPage={perPage} userName={userName} />
+      <Feature5 activities={activityData} page={page} perPage={perPage} name={name} />
       <div><TestCard data={activityData} /></div>
     </main>
   );
