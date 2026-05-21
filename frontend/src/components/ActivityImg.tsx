@@ -21,15 +21,11 @@ export const ActivityImg = ({ polyline }: { polyline: string }) => {
   const mapboxImageUrl = `https://api.mapbox.com/styles/v1/${USERNAME}/${STYLE_ID}/static/${OVERLAY}/${OTHER}/${WIDTH}x${HEIGHT}?access_token=${ACCESS_TOKEN}`;
 
   return (
-    <div style={{ fontFamily: 'sans-serif', padding: '16px' }}>
-      <h3>Activity Card</h3>
       <img 
         src={mapboxImageUrl} 
         alt="Mapbox static route overlay" 
         width={WIDTH} 
         height={HEIGHT}
-        style={{ borderRadius: '8px', display: 'block', marginTop: '8px' }}
       />
-    </div>
   );
 }
