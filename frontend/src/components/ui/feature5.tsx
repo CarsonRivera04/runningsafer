@@ -19,7 +19,7 @@ export interface Feature5Props {
     activities: Activity[];
     page: number;
     perPage: number;
-    userName?: string;
+    name?: string;
 }
 
 export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => {
