@@ -34,7 +34,7 @@ export const Feature5 = ({ activities, page, perPage }: Feature5Props) => {
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                         <div className="flex gap-4 flex-col items-start">
-                            <div>
+                            <div className="mt-2">
                                 <Badge>Platform</Badge>
                             </div>
                             <div className="flex gap-2 flex-col">
