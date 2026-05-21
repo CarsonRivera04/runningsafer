@@ -1,5 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { ActivityImg } from "@/components/ActivityImg";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 
 export interface Activity {
     id: number;
@@ -15,24 +18,65 @@ export interface Activity {
 
 export interface Feature5Props {
     activities: Activity[];
+    page: number;
+    perPage: number;
 }
 
-export const Feature5 = ({ activities }: Feature5Props) => {
+export const Feature5 = ({ activities, page, perPage }: Feature5Props) => {
+    const hasPreviousPage = page > 1;
+    const hasNextPage = activities.length === perPage;
+    const previousPage = Math.max(page - 1, 1);
+    const nextPage = page + 1;
+
     return (
         <div className="w-full py-20 px-4 sm:px-6 lg:py-40">
             <div className="container mx-auto">
                 <div className="flex flex-col gap-10">
-                    <div className="flex gap-4 flex-col items-start">
-                        <div>
-                            <Badge>Platform</Badge>
+                    <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                        <div className="flex gap-4 flex-col items-start">
+                            <div>
+                                <Badge>Platform</Badge>
+                            </div>
+                            <div className="flex gap-2 flex-col">
+                                <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left">
+                                    Something new!
+                                </h2>
+                                <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
+                                    Managing a small business today is already tough.
+                                </p>
+                            </div>
                         </div>
-                        <div className="flex gap-2 flex-col">
-                            <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left">
-                                Something new!
-                            </h2>
-                            <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
-                                Managing a small business today is already tough.
-                            </p>
+
+                        <div className="flex items-center gap-2">
+                            {hasPreviousPage ? (
+                                <Button asChild variant="outline">
+                                    <Link href={`/?page=${previousPage}`} aria-label="Show previous 6 activities">
+                                        <ChevronLeft />
+                                        Previous 6
+                                    </Link>
+                                </Button>
+                            ) : (
+                                <Button variant="outline" disabled aria-label="Show previous 6 activities">
+                                    <ChevronLeft />
+                                    Previous 6
+                                </Button>
+                            )}
+                            <span className="min-w-16 text-center text-sm text-muted-foreground">
+                                Page {page}
+                            </span>
+                            {hasNextPage ? (
+                                <Button asChild variant="outline">
+                                    <Link href={`/?page=${nextPage}`} aria-label="Show next 6 activities">
+                                        Next 6
+                                        <ChevronRight />
+                                    </Link>
+                                </Button>
+                            ) : (
+                                <Button variant="outline" disabled aria-label="Show next 6 activities">
+                                    Next 6
+                                    <ChevronRight />
+                                </Button>
+                            )}
                         </div>
                     </div>
                     
