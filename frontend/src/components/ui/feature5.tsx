@@ -1,7 +1,6 @@
 import { ActivityImg } from "@/components/ActivityImg";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { ActivityPagination } from "@/components/ui/activity-pagination";
+import { LoaderCircle } from "lucide-react";
 
 export interface Activity {
     id: number;
@@ -25,8 +24,6 @@ export interface Feature5Props {
 export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => {
     const hasPreviousPage = page > 1;
     const hasNextPage = activities.length === perPage;
-    const previousPage = Math.max(page - 1, 1);
-    const nextPage = page + 1;
 
     return (
         <div className="w-full py-20 px-4 sm:px-6 lg:py-40">
@@ -44,37 +41,11 @@ export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => 
                             </div>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            {hasPreviousPage ? (
-                                <Button asChild variant="outline">
-                                    <Link href={`/?page=${previousPage}`} aria-label="Show previous 6 activities">
-                                        <ChevronLeft />
-                                        Previous
-                                    </Link>
-                                </Button>
-                            ) : (
-                                <Button variant="outline" disabled aria-label="Show previous 6 activities">
-                                    <ChevronLeft />
-                                    Previous
-                                </Button>
-                            )}
-                            <span className="min-w-16 text-center text-sm text-muted-foreground">
-                                Page {page}
-                            </span>
-                            {hasNextPage ? (
-                                <Button asChild variant="outline">
-                                    <Link href={`/?page=${nextPage}`} aria-label="Show next 6 activities">
-                                        Next
-                                        <ChevronRight />
-                                    </Link>
-                                </Button>
-                            ) : (
-                                <Button variant="outline" disabled aria-label="Show next 6 activities">
-                                    Next
-                                    <ChevronRight />
-                                </Button>
-                            )}
-                        </div>
+                        <ActivityPagination
+                            page={page}
+                            hasPreviousPage={hasPreviousPage}
+                            hasNextPage={hasNextPage}
+                        />
                     </div>
 
                     {/* 2. Dynamically mapping over the activities array */}
@@ -96,3 +67,35 @@ export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => 
         </div>
     );
 };
+
+export function Feature5Loading({ name }: { name?: string }) {
+    return (
+        <div className="w-full py-20 px-4 sm:px-6 lg:py-40">
+            <div className="container mx-auto">
+                <div className="flex flex-col gap-10">
+                    <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+                        <div className="flex gap-4 flex-col items-start">
+                            <div className="flex gap-2 flex-col">
+                                <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left mt-2">
+                                    {name ? `Welcome, ${name}!` : "Welcome!"}
+                                </h2>
+                                <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
+                                    Evaluate the safety of your recent Strava activities.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        className="flex min-h-72 flex-col items-center justify-center gap-3 rounded-md border border-dashed border-border bg-background/60 text-muted-foreground"
+                        role="status"
+                        aria-live="polite"
+                    >
+                        <LoaderCircle className="size-8 animate-spin text-foreground" />
+                        <span className="text-sm">Loading activities...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
