@@ -50,13 +50,13 @@ export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props)
                                 <Button asChild variant="outline">
                                     <Link href={`/?page=${previousPage}`} aria-label="Show previous 6 activities">
                                         <ChevronLeft />
-                                        Previous 6
+                                        Previous
                                     </Link>
                                 </Button>
                             ) : (
                                 <Button variant="outline" disabled aria-label="Show previous 6 activities">
                                     <ChevronLeft />
-                                    Previous 6
+                                    Previous
                                 </Button>
                             )}
                             <span className="min-w-16 text-center text-sm text-muted-foreground">
@@ -65,13 +65,13 @@ export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props)
                             {hasNextPage ? (
                                 <Button asChild variant="outline">
                                     <Link href={`/?page=${nextPage}`} aria-label="Show next 6 activities">
-                                        Next 6
+                                        Next
                                         <ChevronRight />
                                     </Link>
                                 </Button>
                             ) : (
                                 <Button variant="outline" disabled aria-label="Show next 6 activities">
-                                    Next 6
+                                    Next
                                     <ChevronRight />
                                 </Button>
                             )}
