@@ -1,9 +1,9 @@
-export const ActivityCard = () => {
+export const ActivityImg = ({ polyline }: { polyline: string }) => {
   const STROKEWIDTH = 3;
   const STROKECOLOR = "f44";
   const STROKEOPACITY = 1;
   
-  const POLYLINE_UNSAFE = "qryxDdcqaOtDKvBFzECp@@pAH|B@`@ChA@XJf@Cn@Bf@LfAJ\\AZGbBDv@o@p@o@~@a@?Ea@JGGLMKqDBo@CgAQWMg@BaCHc@Ao@Hm@Rc@LK^Qh@OHQF}@ZeBFkA?i@?MKQ}@AWOGe@Yi@I[AMDsEKkCD]Bo@@{HD{BC{DCYBYAsADu@?k@Ai@DuBIeAB_BC}A@kCGCYAkABm@?c@BmDCMBk@Ao@FkAGw@?{BI}@FERFtAE`AD|ABd@?bB@sAG{@EiB?{BBYJEVAtADd@F\\?fDI`A@zAG`@?JBpCCd@?B@FHFv@FhHCxCC^BVGtC?r@Dv@?jB@r@Gb@NtCE|@Hz@EhCFdDDn@Ar@Dj@Ej@EVGx@Qn@[n@?FLVd@?^E|AEJ?NP@FAx@WtBGTa@xCOr@@^Zj@C`@MF_@^]j@Sj@YZ?PZ`@Hf@HRCTAh@Bx@EnAB`@AJITBH\\E@BqA@q@J]HeAxAQD]@gA@eAOk@a@s@BwDAyCBkCEsCB";
+  const POLYLINE_UNSAFE = polyline;
   
   // 2. Safe URL encoding for the polyline string
   const POLYLINE = encodeURIComponent(POLYLINE_UNSAFE);

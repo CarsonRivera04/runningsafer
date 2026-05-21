@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge";
+import { ActivityImg } from "@/components/activitycard";
 
 export interface Activity {
     id: number;
@@ -39,7 +40,9 @@ export const Feature5 = ({ activities }: Feature5Props) => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         {activities?.map((activity) => (
                             <div key={activity.id} className="flex flex-col gap-2">
-                                <div className="bg-muted rounded-md aspect-video mb-2"></div>
+                                <div className="bg-muted rounded-md aspect-video mb-2">
+                                    <ActivityImg polyline={activity.summary_polyline} />
+                                </div>
                                 <h3 className="text-xl tracking-tight">{activity.name}</h3>
                                 <p className="text-muted-foreground text-base">
                                     {activity.distance} meters - {activity.type} on {new Date(activity.start_date).toLocaleDateString()}
