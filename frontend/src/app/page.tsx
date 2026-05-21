@@ -1,5 +1,5 @@
 // app/page.tsx
-import { getActivityData } from "@/lib/api-client";
+import { getActivityData, getCurrentUser } from "@/lib/api-client";
 import { TestCard } from "@/components/testcard"
 import { Header1 } from "@/components/ui/header";
 import { Feature5 } from "@/components/ui/feature5";
@@ -21,7 +21,19 @@ export default async function Page({ searchParams }: PageProps) {
   const params = await searchParams;
   const page = getPageNumber(params?.page);
   const perPage = 6;
-  let activityData = []; 
+  let activityData = [];
+  let userName: string | undefined;
+
+  try {
+    const currentUser = await getCurrentUser();
+    if (currentUser.isAuthenticated && currentUser.user) {
+      const firstName = currentUser.user.firstname ?? "";
+      const lastName = currentUser.user.lastname ?? "";
+      userName = `${firstName} ${lastName}`.trim();
+    }
+  } catch (error) {
+    console.error("Failed to fetch current user:", error);
+  }
 
   try {
     activityData = await getActivityData(page, perPage); 
@@ -33,7 +45,7 @@ export default async function Page({ searchParams }: PageProps) {
   return (
     <main>
       <Header1/>
-      <Feature5 activities={activityData} page={page} perPage={perPage} />
+      <Feature5 activities={activityData} page={page} perPage={perPage} userName={userName} />
       <div><TestCard data={activityData} /></div>
     </main>
   );

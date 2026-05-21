@@ -20,9 +20,10 @@ export interface Feature5Props {
     activities: Activity[];
     page: number;
     perPage: number;
+    userName?: string;
 }
 
-export const Feature5 = ({ activities, page, perPage }: Feature5Props) => {
+export const Feature5 = ({ activities, page, perPage, userName }: Feature5Props) => {
     const hasPreviousPage = page > 1;
     const hasNextPage = activities.length === perPage;
     const previousPage = Math.max(page - 1, 1);
@@ -34,15 +35,12 @@ export const Feature5 = ({ activities, page, perPage }: Feature5Props) => {
                 <div className="flex flex-col gap-10">
                     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
                         <div className="flex gap-4 flex-col items-start">
-                            <div className="mt-2">
-                                <Badge>Platform</Badge>
-                            </div>
                             <div className="flex gap-2 flex-col">
-                                <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left">
-                                    Something new!
+                                <h2 className="text-3xl md:text-5xl tracking-tighter max-w-xl font-regular text-left mt-2">
+                                    {userName ? `Welcome ${userName}!` : "Welcome!"}
                                 </h2>
                                 <p className="text-lg max-w-xl lg:max-w-lg leading-relaxed tracking-tight text-muted-foreground text-left">
-                                    Managing a small business today is already tough.
+                                    Evaluate the safety of your recent Strava activities. 
                                 </p>
                             </div>
                         </div>
