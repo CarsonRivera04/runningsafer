@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { ActivityImg } from "@/components/activitycard";
+import { ActivityImg } from "@/components/ActivityImg";
 
 export interface Activity {
     id: number;
