@@ -23,7 +23,24 @@ async def get_activity(
         if response.status_code != 200:
             raise HTTPException(status_code=400, detail="Failed to retrieve activity")
 
-    activity = response.json()
+    object = response.json()
+    if (object.get("type") not in {"Run", "Walk"}):
+        raise HTTPException(status_code=400, detail="Activity type not supported")
+    
+    if (object.get("map", {}).get("summary_polyline") is None):
+        raise HTTPException(status_code=400, detail="Activity does not contain a summary polyline")
+
+    activity = {
+        "id": object.get("id"),
+        "name": object.get("name"),
+        "type": object.get("type"),
+        "distance": object.get("distance"),
+        "moving_time": object.get("moving_time"),
+        "elapsed_time": object.get("elapsed_time"),
+        "start_date": object.get("start_date"),
+        "summary_polyline": object.get("map", {}).get("summary_polyline"),  
+        "coordinates": polyline.decode(object.get("map", {}).get("summary_polyline"))  
+    }
 
     return activity
 

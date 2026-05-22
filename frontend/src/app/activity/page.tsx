@@ -24,7 +24,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
     <main>
         <div>DETAILED VIEW PAGE</div>
         <div>{activityId}</div>
-        <div>{JSON.stringify(activityDetails)}</div>
+        <DetailedView activity={activityDetails} />
     </main>
   );
 }
