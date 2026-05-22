@@ -75,3 +75,27 @@ export async function getActivityData(page: number = 1, perPage: number = 30) {
     throw error;
   }
 }
+
+export async function getActivityDetails(activityId: number) {
+  try {
+    const user = await getCurrentUser();
+    if (!user.isAuthenticated) {
+      return null;
+    }
+    const cookieHeader = await getCookieHeader();
+    const res = await fetch(`${baseUrl}/strava/activities/${activityId}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'accept': 'application/json',
+        Cookie: cookieHeader,
+      }
+    });
+    if (!res.ok) throw new Error("Failed to fetch activity details");
+    return res.json();
+  }
+  catch (error) {
+    console.error("Failed to fetch activity details:", error);
+    throw error;
+  }
+}

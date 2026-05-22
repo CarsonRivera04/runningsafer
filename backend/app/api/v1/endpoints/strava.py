@@ -9,6 +9,24 @@ from app.utils.auth import (
 
 router = APIRouter()
 
+@router.get("/activities/{activity_id}")
+async def get_activity(
+    user: Annotated[User, Depends(get_authenticated_user)],
+    activity_id: int
+):
+    async with httpx.AsyncClient() as client: 
+        response = await client.get(
+            f"https://www.strava.com/api/v3/activities/{activity_id}",
+            headers={"Authorization": f"Bearer {user.access_token}"}
+        )
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=400, detail="Failed to retrieve activity")
+
+    activity = response.json()
+
+    return activity
+
 @router.get("/activities")
 async def get_activities(
     user: Annotated[User, Depends(get_authenticated_user)],
