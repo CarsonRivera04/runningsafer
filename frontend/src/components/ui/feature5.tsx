@@ -63,6 +63,9 @@ export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => 
 
                                     - {activity.type} on {new Date(activity.start_date).toLocaleDateString()}
                                 </p>
+                                <Button variant="outline">
+                                    View Safety Report
+                                </Button>
                             </div>
                         ))}
                     </div>
