@@ -4,6 +4,7 @@ import { getActivityData, getCurrentUser } from "@/lib/api-client";
 import { TestCard } from "@/components/testcard"
 import { Header1 } from "@/components/ui/header";
 import { Feature5, Feature5Loading } from "@/components/ui/feature5";
+import { CTA1 } from "@/components/ui/cta1";
 
 interface PageProps {
   searchParams?: Promise<{
@@ -33,6 +34,24 @@ async function ActivitiesSection({
     activityData = await getActivityData(page, perPage);
   } catch (error) {
     console.error("Failed to fetch activity data:", error);
+  }
+
+  let firstname: string = "";
+
+  if (activityData.length === 0) {
+    try {
+      const currentUser = await getCurrentUser();
+      if (currentUser.isAuthenticated && currentUser.user) {
+        firstname = currentUser.user.firstname ?? "";
+      }
+    } catch (error) {
+      console.error("Failed to fetch current user:", error);
+    }
+    return (
+      <>
+        <CTA1 firstname={firstname} />
+      </>
+    );
   }
 
   return (
