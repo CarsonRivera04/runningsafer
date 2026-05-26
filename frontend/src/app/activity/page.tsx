@@ -25,8 +25,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
   return (
     <main>
         <Header1 />
-        <div>DETAILED VIEW PAGE</div>
-        <div>{activityId}</div>
         <DetailedView activity={activityDetails} />
     </main>
   );

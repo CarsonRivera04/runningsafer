@@ -1,3 +1,4 @@
+import { Feature1 } from "@/components/ui/feature1";
 export interface Activity {
     id: number;
     name: string;
@@ -11,8 +12,9 @@ export interface Activity {
 }
 
 export const DetailedView = ({activity}: {activity: Activity}) => {
-    return (
-        <>
+    return ( 
+        <div className="w-full py-20 px-4 sm:px-6lg:py-40">
+            <Feature1 polyline={activity.summary_polyline} />
             <h1>{activity.name}</h1>
             <p>Type: {activity.type}</p>
             <p>Distance: {(activity.distance / 1000).toFixed(2)} km</p>
@@ -21,6 +23,6 @@ export const DetailedView = ({activity}: {activity: Activity}) => {
             <p>Start Date: {new Date(activity.start_date).toLocaleString()}</p>
             <p>Summary Polyline: {activity.summary_polyline}</p>
             <p>Coordinates: {JSON.stringify(activity.coordinates)}</p>
-        </>
+        </div>
     )
 }
