@@ -1,5 +1,7 @@
 import { DetailedView } from "@/components/DetailedView";
 import { getActivityDetails } from "@/lib/api-client";
+import { Header1 } from "@/components/ui/header";
+
 export default async function Page({ searchParams }: { searchParams: Promise<{ activityId: string }> }) {
     const { activityId } = await searchParams;
 
@@ -22,6 +24,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
 
   return (
     <main>
+        <Header1 />
         <div>DETAILED VIEW PAGE</div>
         <div>{activityId}</div>
         <DetailedView activity={activityDetails} />
