@@ -1,4 +1,5 @@
 import httpx
+import requests
 import polyline
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Annotated
@@ -8,6 +9,41 @@ from app.utils.auth import (
 )
 
 router = APIRouter()
+
+@router.get("/details")
+async def get_details(
+    coordinates: list[tuple[float, float]],
+    radius_meters: int = 15
+):
+    OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+    
+    coordinates = coordinates[::10]
+    lat_lon_queries = "".join([
+        f'way(around:{radius_meters},{lat},{lon})["highway"];' 
+        for lat, lon in coordinates
+    ])
+
+    
+    query = f"""
+    [out:json][timeout:60];
+    (
+      {lat_lon_queries}
+    );
+    out geom;
+    """
+    
+    print("Fetching pedestrian safety data from Overpass API...")
+    response = requests.get(
+        OVERPASS_URL,
+        params={"data": query},
+        headers={"User-Agent": "Safer Strava Pedestrian (carsonrivera04@gmail.com)"},
+        timeout=30,
+    )
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise HTTPException(status_code=response.status_code, detail=f"API request failed with status {response.status_code}: {response.text}")
 
 @router.get("/activities/{activity_id}")
 async def get_activity(
