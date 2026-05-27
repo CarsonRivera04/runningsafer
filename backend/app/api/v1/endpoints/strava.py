@@ -39,11 +39,37 @@ async def get_details(
         headers={"User-Agent": "Safer Strava Pedestrian (carsonrivera04@gmail.com)"},
         timeout=30,
     )
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=response.status_code, detail=f"Overpass API request failed with status {response.status_code}: {response.text}")
     
-    if response.status_code == 200:
-        return response.json()
-    else:
-        raise HTTPException(status_code=response.status_code, detail=f"API request failed with status {response.status_code}: {response.text}")
+    data = response.json()
+
+    geo_objects = []
+
+    elements = data.get('elements', [])
+    ways = [e for e in elements if e['type'] == 'way']
+    for way in ways:
+        tags = way.get('tags', {})
+        name = tags.get('name', 'Unnamed Path/Road')
+        highway_type = tags.get('highway', 'unknown')
+        
+        # Extract coordinates fetched via 'out geom'
+        geometry = way.get('geometry', [])
+        coordinates_list = [(pt['lat'], pt['lon']) for pt in geometry]
+        bounds = way.get('bounds', {})
+
+        geo_objects.append({
+            "name": name,
+            "highway_type": highway_type,
+            "coordinates": coordinates_list,
+            "tags": tags,
+            "bounds": bounds
+        })
+    
+    return geo_objects
+
+
 
 @router.get("/activities/{activity_id}")
 async def get_activity(
