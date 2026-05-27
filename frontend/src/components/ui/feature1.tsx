@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MoveLeft } from "lucide-react";
-import { ActivityImg } from "@/components/ActivityImg";
+import { ActivityImgAlt } from "@/components/ActivityImgAlt";
 
 export const Feature1 = ({polyline}: {polyline: string}) => (
   <div className="w-full py-20 px-4 sm:px-6lg:py-40">
@@ -55,7 +55,7 @@ export const Feature1 = ({polyline}: {polyline: string}) => (
           </div>
         </div>
         <div className="bg-muted rounded-md">
-            <ActivityImg polyline={polyline} />
+            <ActivityImgAlt polyline={polyline} />
         </div>
       </div>
     </div>
