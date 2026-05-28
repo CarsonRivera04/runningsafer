@@ -21,7 +21,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
             </main>
         );
     }
-    const mapDetails = await getMapDetails(activityDetails.coordinates);
+    const mapDetails = await getMapDetails(activityDetails.summary_polyline);
 
     if (!mapDetails) {
         return (
