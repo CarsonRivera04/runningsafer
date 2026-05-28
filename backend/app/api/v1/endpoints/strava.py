@@ -12,25 +12,24 @@ router = APIRouter()
 
 @router.get("/details")
 async def get_details(
-    coordinates: list[str] = Query(..., description="List of 'lat,lon' coordinate pairs"),
+    summary_polyline: str = Query(..., description="Encoded Strava summary polyline"),
     radius_meters: int = 15
 ):
-    parsed_coordinates = []
-    for pair in coordinates:
-        try:
-            lat, lon = map(float, pair.split(","))
-            parsed_coordinates.append((lat, lon))
-        except ValueError:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"Invalid coordinate format for pair '{pair}'."
-            )
+    try:
+        parsed_coordinates = polyline.decode(summary_polyline)
+    except (IndexError, TypeError, ValueError):
+        raise HTTPException(status_code=400, detail="Invalid summary polyline.")
+
+    if not parsed_coordinates:
+        raise HTTPException(status_code=400, detail="Summary polyline does not contain coordinates.")
+
+    sampled_coordinates = parsed_coordinates[::10]
 
     OVERPASS_URL = "https://overpass-api.de/api/interpreter"
 
     lat_lon_queries = "".join([
         f'way(around:{radius_meters},{lat},{lon})["highway"];' 
-        for lat, lon in parsed_coordinates  
+        for lat, lon in sampled_coordinates
     ])
     
     query = f"""

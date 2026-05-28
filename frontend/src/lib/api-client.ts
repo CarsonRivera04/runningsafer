@@ -100,20 +100,17 @@ export async function getActivityDetails(activityId: number) {
   }
 }
 
-export async function getMapDetails(coordinates: [number, number][], radius_meters: number = 15) {
+export async function getMapDetails(summaryPolyline: string, radius_meters: number = 15) {
   try {
     const user = await getCurrentUser();
     if (!user.isAuthenticated) {
       return null;
     }
 
-    coordinates = coordinates.filter((_, index) => index % 10 === 0);
     const cookieHeader = await getCookieHeader();
     const params = new URLSearchParams();
+    params.append('summary_polyline', summaryPolyline);
     params.append('radius_meters', radius_meters.toString());
-    coordinates.forEach(coord => {
-      params.append('coordinates', `${coord[0]},${coord[1]}`);
-    });
     const res = await fetch(`${baseUrl}/strava/details?${params.toString()}`, {
       method: 'GET', 
       cache: 'no-store',
