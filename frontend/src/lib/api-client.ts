@@ -99,3 +99,37 @@ export async function getActivityDetails(activityId: number) {
     throw error;
   }
 }
+
+export async function getMapDetails(coordinates: [number, number][], radius_meters: number = 15) {
+  try {
+    const user = await getCurrentUser();
+    if (!user.isAuthenticated) {
+      return null;
+    }
+
+    coordinates = coordinates.filter((_, index) => index % 10 === 0);
+    const cookieHeader = await getCookieHeader();
+    const params = new URLSearchParams();
+    params.append('radius_meters', radius_meters.toString());
+    coordinates.forEach(coord => {
+      params.append('coordinates', `${coord[0]},${coord[1]}`);
+    });
+    const res = await fetch(`${baseUrl}/strava/details?${params.toString()}`, {
+      method: 'GET', 
+      cache: 'no-store',
+      headers: {
+        'accept': 'application/json',
+        Cookie: cookieHeader,
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch map details");
+    }
+    return res.json();
+  }
+  catch (error) {
+    console.error("Failed to fetch map details", error);
+    throw error;
+  }
+}

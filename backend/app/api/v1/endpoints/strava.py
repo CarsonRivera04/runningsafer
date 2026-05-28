@@ -1,7 +1,7 @@
 import httpx
 import requests
 import polyline
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import Annotated
 from app.models.user import User
 from app.utils.auth import (
@@ -12,17 +12,26 @@ router = APIRouter()
 
 @router.get("/details")
 async def get_details(
-    coordinates: list[tuple[float, float]],
+    coordinates: list[str] = Query(..., description="List of 'lat,lon' coordinate pairs"),
     radius_meters: int = 15
 ):
+    parsed_coordinates = []
+    for pair in coordinates:
+        try:
+            lat, lon = map(float, pair.split(","))
+            parsed_coordinates.append((lat, lon))
+        except ValueError:
+            raise HTTPException(
+                status_code=400, 
+                detail=f"Invalid coordinate format for pair '{pair}'."
+            )
+
     OVERPASS_URL = "https://overpass-api.de/api/interpreter"
-    
-    coordinates = coordinates[::10]
+
     lat_lon_queries = "".join([
         f'way(around:{radius_meters},{lat},{lon})["highway"];' 
-        for lat, lon in coordinates
+        for lat, lon in parsed_coordinates  
     ])
-
     
     query = f"""
     [out:json][timeout:60];
