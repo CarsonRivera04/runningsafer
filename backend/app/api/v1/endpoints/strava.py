@@ -61,6 +61,10 @@ async def get_details(
         tags = way.get('tags', {})
         name = tags.get('name', 'Unnamed Path/Road')
         highway_type = tags.get('highway', 'unknown')
+        sidewalk = tags.get('sidewalk', 'unknown')
+        sidewalk_right = tags.get('sidewalk:right', 'unknown')
+        sidewalk_left = tags.get('sidewalk:left', 'unknown')
+        sidewalk_both = tags.get('sidewalk:both', 'unknown')
         
         # Extract coordinates fetched via 'out geom'
         geometry = way.get('geometry', [])
@@ -70,10 +74,41 @@ async def get_details(
         geo_objects.append({
             "name": name,
             "highway_type": highway_type,
+            "sidewalk": sidewalk,
+            "sidewalk_right": sidewalk_right,
+            "sidewalk_left": sidewalk_left,
+            "sidewalk_both": sidewalk_both,
             "coordinates": coordinates_list,
             "tags": tags,
             "bounds": bounds
         })
+
+    # highway types 
+    H_TIER_1 = {"corridor", "pedestrian", "footway", "sidewalk"}
+    H_TIER_2 = {"living_street", "bridleway"}
+    H_TIER_3 = {"path", "traffic_island", "crossing"}
+    H_TIER_4 = {"steps", "via_ferrata"}
+
+    # sidewalk types
+    S_TIER_1 = {"both"}
+    S_TIER_2 = {"right", "left", "separate", "yes"}
+    S_TIER_3 = {"lane"}
+    S_TIER_4 = {"no", "none"}
+
+
+    num_objs = len(geo_objects)
+    
+    for obj in geo_objects:
+        if obj["highway_type"] in H_TIER_1 or obj["sidewalk"] in S_TIER_1 or obj["sidewalk_right"] in S_TIER_1 or obj["sidewalk_left"] in S_TIER_1 or obj["sidewalk_both"] in S_TIER_1:
+            obj["score"] = 1
+        elif obj["highway_type"] in H_TIER_2 or obj["sidewalk"] in S_TIER_2 or obj["sidewalk_right"] in S_TIER_2 or obj["sidewalk_left"] in S_TIER_2 or obj["sidewalk_both"] in S_TIER_2:
+            obj["score"] = 0.75 
+        elif obj["highway_type"] in H_TIER_3 or obj["sidewalk"] in S_TIER_3 or obj["sidewalk_right"] in S_TIER_3 or obj["sidewalk_left"] in S_TIER_3 or obj["sidewalk_both"] in S_TIER_3:
+            obj["score"] = 0.5
+        else: 
+            obj["score"] = 0.25
+        
+        
     
     return geo_objects
 

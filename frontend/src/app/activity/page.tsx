@@ -13,7 +13,13 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
         );
     }
 
-    const activityDetails = await getActivityDetails(Number(activityId));
+    let activityDetails = null;
+    try {
+        activityDetails = await getActivityDetails(Number(activityId));
+    } catch (error) {
+        console.error("Error fetching activity details:", error);
+    }
+
     if (!activityDetails) {
         return (
             <main>
@@ -21,7 +27,13 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
             </main>
         );
     }
-    const mapDetails = await getMapDetails(activityDetails.summary_polyline);
+    let mapDetails = null;
+    try {
+        mapDetails = await getMapDetails(activityDetails.summary_polyline);
+    }
+    catch (error) {
+        console.error("Error fetching map details:", error);
+    }
 
     if (!mapDetails) {
         return (
