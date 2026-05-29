@@ -79,8 +79,8 @@ async def get_details(
             "sidewalk_left": sidewalk_left,
             "sidewalk_both": sidewalk_both,
             "coordinates": coordinates_list,
-            "tags": tags,
-            "bounds": bounds
+            "average_lat": (bounds.get('minlat', 0) + bounds.get('maxlat', 0)) / 2,
+            "average_lon": (bounds.get('minlon', 0) + bounds.get('maxlon', 0)) / 2,
         })
 
     # highway types 
@@ -95,20 +95,15 @@ async def get_details(
     S_TIER_3 = {"lane"}
     S_TIER_4 = {"no", "none"}
 
-
-    num_objs = len(geo_objects)
-    
     for obj in geo_objects:
         if obj["highway_type"] in H_TIER_1 or obj["sidewalk"] in S_TIER_1 or obj["sidewalk_right"] in S_TIER_1 or obj["sidewalk_left"] in S_TIER_1 or obj["sidewalk_both"] in S_TIER_1:
             obj["score"] = 1
         elif obj["highway_type"] in H_TIER_2 or obj["sidewalk"] in S_TIER_2 or obj["sidewalk_right"] in S_TIER_2 or obj["sidewalk_left"] in S_TIER_2 or obj["sidewalk_both"] in S_TIER_2:
-            obj["score"] = 0.75 
+            obj["score"] = 2 
         elif obj["highway_type"] in H_TIER_3 or obj["sidewalk"] in S_TIER_3 or obj["sidewalk_right"] in S_TIER_3 or obj["sidewalk_left"] in S_TIER_3 or obj["sidewalk_both"] in S_TIER_3:
-            obj["score"] = 0.5
+            obj["score"] = 3 
         else: 
-            obj["score"] = 0.25
-        
-        
+            obj["score"] = 4
     
     return geo_objects
 

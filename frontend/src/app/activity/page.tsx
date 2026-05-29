@@ -27,22 +27,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
             </main>
         );
     }
-    let mapDetails = null;
-    try {
-        mapDetails = await getMapDetails(activityDetails.summary_polyline);
-    }
-    catch (error) {
-        console.error("Error fetching map details:", error);
-    }
-
-    if (!mapDetails) {
-        return (
-            <main>
-                <Header1 />
-                <div>Failed to fetch map details.</div>
-            </main>
-        );
-    }
 
   return (
     <main>
@@ -50,7 +34,6 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
         <DetailedView activity={activityDetails} />
         <div>
             <h2 className="text-2xl font-bold mb-4">Map Details</h2>
-            <pre className="bg-gray-100 p-4 rounded">{JSON.stringify(mapDetails, null, 2)}</pre>
         </div>
     </main>
   );

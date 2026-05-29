@@ -1,5 +1,33 @@
 import { NextRequest } from "next/server";
-import { getCurrentUser } from "@/lib/api-client";
+import { getCurrentUser, getMapDetails } from "@/lib/api-client";
+
+interface MapDetail {
+  name: string;
+  highway_type: string;
+  sidewalk: string;
+  sidewalk_right: string;
+  sidewalk_left: string;
+  sidewalk_both: string;
+  coordinates: [number, number][];
+  average_lat: number;
+  average_lon: number;
+  score: number;
+}
+
+const getColorByScore = (score: number): string => {
+  switch (score) {
+    case 1:
+      return "#10B981"; 
+    case 2:
+      return "#FBBF24"; 
+    case 3:
+      return "#F97316"; 
+    case 4:
+      return "#EF4444"; 
+    default:
+      return "#808080"; 
+  }
+};
 
 const USERNAME = "mapbox";
 const STYLE_ID = "streets-v12";
@@ -29,12 +57,40 @@ export async function GET(request: NextRequest) {
     return new Response("Missing polyline.", { status: 400 });
   }
 
+  let mapDetails: MapDetail[] | null = null;
+  try {
+    mapDetails = await getMapDetails(polyline);
+  } catch (error) {
+    console.error("Error fetching map details:", error);
+  }
+
+  const geojson = mapDetails?.length
+    ? {
+      type: "FeatureCollection" as const,
+      features: Array.from({ length: Math.min(10, mapDetails.length) }, (_, i) => {
+        const step = mapDetails.length / Math.min(20, mapDetails.length);
+        const targetIndex = Math.floor(i * step);
+        return mapDetails[targetIndex];
+      }).map((obj) => ({
+        type: "Feature",
+        geometry: {
+          type: "Point",
+          coordinates: [obj.average_lon, obj.average_lat],
+        },
+        properties: {
+          "marker-color": getColorByScore(obj.score),
+          "marker-size": "small",
+          "marker-symbol": "triangle-stroked",
+        },
+      })),
+    }
+    : null;
+
   const encodedPolyline = encodeURIComponent(polyline);
   const path = `path-${STROKE_WIDTH}+${STROKE_COLOR}-${STROKE_OPACITY}(${encodedPolyline})`;
-  // const path = 'path-5+f44-0.5(%7DrpeFxbnjVsFwdAvr@cHgFor@jEmAlFmEMwM_FuItCkOi@wc@bg@wBSgM)';
-  //const pin = 'pin-s-a+9ed4bd(30.44665,-84.30659)'
-  const pin = 'pin-s-a+9ed4bd(-84.30659,30.44665)'
-  const overlay = `${path},${pin}`;
+  const overlay = geojson
+    ? `${path},geojson(${encodeURIComponent(JSON.stringify(geojson))})`
+    : path;
   const mapboxImageUrl = `https://api.mapbox.com/styles/v1/${USERNAME}/${STYLE_ID}/static/${overlay}/${OTHER}/${WIDTH}x${HEIGHT}?access_token=${accessToken}`;
   const mapboxResponse = await fetch(mapboxImageUrl, {
     next: { revalidate: 60 * 60 * 24 },
