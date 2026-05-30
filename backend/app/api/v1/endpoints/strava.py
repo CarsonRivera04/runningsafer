@@ -94,16 +94,27 @@ async def get_details(
         })
 
     # highway types 
-    H_TIER_1 = {"corridor", "pedestrian", "footway", "sidewalk"}
-    H_TIER_2 = {"living_street", "bridleway"}
-    H_TIER_3 = {"path", "traffic_island", "crossing"}
-    H_TIER_4 = {"steps", "via_ferrata"}
+    H_TIER_1 = {"corridor": "For a hallway inside of a building.", 
+                "pedestrian": "For roads used mainly/exclusively for pedestrians in shopping and some residential areas which may allow access by motorised vehicles only for very limited periods of the day.", 
+                "footway" : "For designated footpaths; i.e., mainly/exclusively for pedestrians. This includes walking tracks and gravel paths.", 
+                "sidewalk": "Sidewalk that runs typically along residential road."}
+    H_TIER_2 = {"living_street": "For living streets, which are residential streets where pedestrians have legal priority over cars, speeds are kept very low.", 
+                "bridleway": "For horse riders. Pedestrians are usually also permitted, cyclists may be permitted depending on local rules/laws. Motor vehicles are forbidden."}
+    H_TIER_3 = {"path": "A non-specific path.", 
+                "traffic_island": "The way between two crossings, safespot for pedestrians.", 
+                "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights."}
+    H_TIER_4 = {"steps": "For flights of steps (stairs) on footways.", 
+                "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing."}
 
     # sidewalk types
-    S_TIER_1 = {"both"}
-    S_TIER_2 = {"right", "left", "separate", "yes"}
-    S_TIER_3 = {"lane"}
-    S_TIER_4 = {"no", "none"}
+    S_TIER_1 = {"both": "Both sides of the street have sidewalks."}
+    S_TIER_2 = {"right": "Only a sidewalk on the right side of the way representing the street.", 
+                "left": "Only a sidewalk on the left side of the way representing the street.", 
+                "separate": "Either both sides or one side of this street have sidewalks.", 
+                "yes": "Either both sides or one side of this street have sidewalks."}
+    S_TIER_3 = {"lane": "Either both sides or one side of this street have a lane dedicated for pedestrian movement."}
+    S_TIER_4 = {"no": "There is no sidewalk at all.", 
+                "none": "There is no sidewalk at all.",}
 
     for obj in geo_objects:
         if obj["highway_type"] in H_TIER_1 or obj["sidewalk"] in S_TIER_1 or obj["sidewalk_right"] in S_TIER_1 or obj["sidewalk_left"] in S_TIER_1 or obj["sidewalk_both"] in S_TIER_1:
