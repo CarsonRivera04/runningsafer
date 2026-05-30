@@ -9,8 +9,8 @@ interface MapDetail {
   sidewalk_left: string;
   sidewalk_both: string;
   coordinates: [number, number][];
-  average_lat: number;
-  average_lon: number;
+  closest_lat: number;
+  closest_lon: number;
   score: number;
 }
 
@@ -75,7 +75,7 @@ export async function GET(request: NextRequest) {
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [obj.average_lon, obj.average_lat],
+          coordinates: [obj.closest_lon, obj.closest_lat],
         },
         properties: {
           "marker-color": getColorByScore(obj.score),

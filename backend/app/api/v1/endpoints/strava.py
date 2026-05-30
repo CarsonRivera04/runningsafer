@@ -69,7 +69,17 @@ async def get_details(
         # Extract coordinates fetched via 'out geom'
         geometry = way.get('geometry', [])
         coordinates_list = [(pt['lat'], pt['lon']) for pt in geometry]
-        bounds = way.get('bounds', {})
+
+        if coordinates_list:
+            closest_parsed_point = min(
+                parsed_coordinates,
+                key=lambda parsed_point: min(
+                    (parsed_point[0] - geom_point[0]) ** 2 + (parsed_point[1] - geom_point[1]) ** 2
+                    for geom_point in coordinates_list
+                )
+            )
+        else:
+            closest_parsed_point = parsed_coordinates[0]
 
         geo_objects.append({
             "name": name,
@@ -79,8 +89,8 @@ async def get_details(
             "sidewalk_left": sidewalk_left,
             "sidewalk_both": sidewalk_both,
             "coordinates": coordinates_list,
-            "average_lat": (bounds.get('minlat', 0) + bounds.get('maxlat', 0)) / 2,
-            "average_lon": (bounds.get('minlon', 0) + bounds.get('maxlon', 0)) / 2,
+            "closest_lat": closest_parsed_point[0],
+            "closest_lon": closest_parsed_point[1],
         })
 
     # highway types 
