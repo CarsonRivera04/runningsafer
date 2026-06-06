@@ -3,8 +3,15 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MoveLeft } from "lucide-react";
 import { ActivityImgAlt } from "@/components/ActivityImgAlt";
+import { getMapMarkers, type MapDetail } from "@/lib/map-details";
 
-export const Feature1 = ({polyline}: {polyline: string}) => (
+export const Feature1 = ({
+  polyline,
+  mapDetails,
+}: {
+  polyline: string;
+  mapDetails: MapDetail[];
+}) => (
   <div className="w-full py-20 px-4 sm:px-6lg:py-40">
     <div className="container mx-auto">
       <div className="grid border rounded-lg container py-8 px-4 sm:px-6 grid-cols-1 gap-8 items-center lg:grid-cols-2">
@@ -55,7 +62,7 @@ export const Feature1 = ({polyline}: {polyline: string}) => (
           </div>
         </div>
         <div className="bg-muted rounded-md">
-            <ActivityImgAlt polyline={polyline} />
+            <ActivityImgAlt polyline={polyline} markers={getMapMarkers(mapDetails)} />
         </div>
       </div>
     </div>

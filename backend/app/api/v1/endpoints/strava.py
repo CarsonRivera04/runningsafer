@@ -99,7 +99,8 @@ async def get_details(
                 "footway" : "For designated footpaths; i.e., mainly/exclusively for pedestrians. This includes walking tracks and gravel paths.", 
                 "sidewalk": "Sidewalk that runs typically along residential road."}
     H_TIER_2 = {"living_street": "For living streets, which are residential streets where pedestrians have legal priority over cars, speeds are kept very low.", 
-                "bridleway": "For horse riders. Pedestrians are usually also permitted, cyclists may be permitted depending on local rules/laws. Motor vehicles are forbidden."}
+                "bridleway": "For horse riders. Pedestrians are usually also permitted, cyclists may be permitted depending on local rules/laws. Motor vehicles are forbidden.",
+                "residential": "Roads which serve as an access to housing, without function of connecting settlements. Often lined with housing."}
     H_TIER_3 = {"path": "A non-specific path.", 
                 "traffic_island": "The way between two crossings, safespot for pedestrians.", 
                 "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights."}

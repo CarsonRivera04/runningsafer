@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import type { MapDetail } from "@/lib/map-details";
 
 const baseUrl = "http://localhost:3000/api/py";
 
@@ -100,7 +101,7 @@ export async function getActivityDetails(activityId: number) {
   }
 }
 
-export async function getMapDetails(summaryPolyline: string, radius_meters: number = 15) {
+export async function getMapDetails(summaryPolyline: string, radius_meters: number = 15): Promise<MapDetail[] | null> {
   try {
     const user = await getCurrentUser();
     if (!user.isAuthenticated) {

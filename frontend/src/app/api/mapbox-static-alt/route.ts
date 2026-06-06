@@ -1,33 +1,6 @@
 import { NextRequest } from "next/server";
-import { getCurrentUser, getMapDetails } from "@/lib/api-client";
-
-interface MapDetail {
-  name: string;
-  highway_type: string;
-  sidewalk: string;
-  sidewalk_right: string;
-  sidewalk_left: string;
-  sidewalk_both: string;
-  coordinates: [number, number][];
-  closest_lat: number;
-  closest_lon: number;
-  score: number;
-}
-
-const getColorByScore = (score: number): string => {
-  switch (score) {
-    case 1:
-      return "#10B981"; 
-    case 2:
-      return "#FBBF24"; 
-    case 3:
-      return "#F97316"; 
-    case 4:
-      return "#EF4444"; 
-    default:
-      return "#808080"; 
-  }
-};
+import { getCurrentUser } from "@/lib/api-client";
+import { getColorByScore, type MapMarker } from "@/lib/map-details";
 
 const USERNAME = "mapbox";
 const STYLE_ID = "streets-v12";
@@ -42,6 +15,7 @@ export async function GET(request: NextRequest) {
   const currentUser = await getCurrentUser();
   const accessToken = process.env.MAPBOX_ACCESS_TOKEN;
   const polyline = request.nextUrl.searchParams.get("polyline");
+  const markersParam = request.nextUrl.searchParams.get("markers");
 
   if (!currentUser.isAuthenticated) {
     return new Response("Unauthorized.", { status: 401 });
@@ -57,28 +31,34 @@ export async function GET(request: NextRequest) {
     return new Response("Missing polyline.", { status: 400 });
   }
 
-  let mapDetails: MapDetail[] | null = null;
-  try {
-    mapDetails = await getMapDetails(polyline);
-  } catch (error) {
-    console.error("Error fetching map details:", error);
+  let markers: MapMarker[] = [];
+
+  if (markersParam) {
+    try {
+      const parsedMarkers = JSON.parse(markersParam);
+      if (Array.isArray(parsedMarkers)) {
+        markers = parsedMarkers.filter((marker): marker is MapMarker => (
+          typeof marker.closest_lat === "number" &&
+          typeof marker.closest_lon === "number" &&
+          typeof marker.score === "number"
+        ));
+      }
+    } catch (error) {
+      console.error("Error parsing map markers:", error);
+    }
   }
 
-  const geojson = mapDetails?.length
+  const geojson = markers.length
     ? {
       type: "FeatureCollection" as const,
-      features: Array.from({ length: Math.min(10, mapDetails.length) }, (_, i) => {
-        const step = mapDetails.length / Math.min(20, mapDetails.length);
-        const targetIndex = Math.floor(i * step);
-        return mapDetails[targetIndex];
-      }).map((obj) => ({
+      features: markers.map((marker) => ({
         type: "Feature",
         geometry: {
           type: "Point",
-          coordinates: [obj.closest_lon, obj.closest_lat],
+          coordinates: [marker.closest_lon, marker.closest_lat],
         },
         properties: {
-          "marker-color": getColorByScore(obj.score),
+          "marker-color": getColorByScore(marker.score),
           "marker-size": "small",
           "marker-symbol": "triangle-stroked",
         },
