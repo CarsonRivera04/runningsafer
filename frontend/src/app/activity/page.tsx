@@ -1,6 +1,7 @@
 import { DetailedView } from "@/components/DetailedView";
 import { getActivityDetails, getMapDetails } from "@/lib/api-client";
 import { Header1 } from "@/components/ui/header";
+import type { MapDetail } from "@/lib/map-details";
 
 export default async function Page({ searchParams }: { searchParams: Promise<{ activityId: string }> }) {
     const { activityId } = await searchParams;
@@ -28,13 +29,17 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
         );
     }
 
+    let mapDetails: MapDetail[] = [];
+    try {
+        mapDetails = await getMapDetails(activityDetails.summary_polyline) ?? [];
+    } catch (error) {
+        console.error("Error fetching map details:", error);
+    }
+
   return (
     <main>
         <Header1 />
-        <DetailedView activity={activityDetails} />
-        <div>
-            <h2 className="text-2xl font-bold mb-4">Map Details</h2>
-        </div>
+        <DetailedView activity={activityDetails} mapDetails={mapDetails} />
     </main>
   );
 }

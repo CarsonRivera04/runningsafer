@@ -1,5 +1,19 @@
-export const ActivityImgAlt = ({ polyline }: { polyline: string }) => {
-  const mapboxImageUrl = `/api/mapbox-static-alt?polyline=${encodeURIComponent(polyline)}`;
+import type { MapMarker } from "@/lib/map-details";
+
+export const ActivityImgAlt = ({
+  polyline,
+  markers,
+}: {
+  polyline: string;
+  markers: MapMarker[];
+}) => {
+  const params = new URLSearchParams({ polyline });
+
+  if (markers.length) {
+    params.set("markers", JSON.stringify(markers));
+  }
+
+  const mapboxImageUrl = `/api/mapbox-static-alt?${params.toString()}`;
 
   return (
     <img
