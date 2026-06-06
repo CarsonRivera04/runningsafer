@@ -100,12 +100,30 @@ async def get_details(
                 "sidewalk": "Sidewalk that runs typically along residential road."}
     H_TIER_2 = {"living_street": "For living streets, which are residential streets where pedestrians have legal priority over cars, speeds are kept very low.", 
                 "bridleway": "For horse riders. Pedestrians are usually also permitted, cyclists may be permitted depending on local rules/laws. Motor vehicles are forbidden.",
-                "residential": "Roads which serve as an access to housing, without function of connecting settlements. Often lined with housing."}
+                "residential": "Roads which serve as an access to housing, without function of connecting settlements. Often lined with housing.",
+                "track": "Roads for mostly agricultural or forestry uses."}
     H_TIER_3 = {"path": "A non-specific path.", 
                 "traffic_island": "The way between two crossings, safespot for pedestrians.", 
-                "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights."}
+                "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights.",
+                "tertiary": "The next most important roads in a country's system. (Often link smaller towns and villages) ",
+                "unclassified": "The least important through roads in a country's system – i.e. minor roads of a lower classification than tertiary, but which serve a purpose other than access to properties. (Often link villages and hamlets.)",
+                "service": "For access roads to, or within an industrial estate, camp site, business park, car park, alleys, etc."}
     H_TIER_4 = {"steps": "For flights of steps (stairs) on footways.", 
-                "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing."}
+                "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing.",
+                "motorway": "A restricted access major divided highway, normally with 2 or more running lanes plus emergency hard shoulder. Equivalent to the Freeway, Autobahn, etc..",
+                "trunk": "The most important roads in a country's system that aren't motorways. (Need not necessarily be a divided highway.)",
+                "primary": "The next most important roads in a country's system. (Often link larger towns.)",
+                "secondary": "The next most important roads in a country's system. (Often link towns.)",
+                "motorway_link": "The link roads (sliproads/ramps) leading to/from a motorway from/to a motorway or lower class highway. Normally with the same motorway restrictions.",
+                "trunk_link": "The link roads (sliproads/ramps) leading to/from a trunk road from/to a trunk road or lower class highway.",
+                "primary_link": "The link roads (sliproads/ramps) leading to/from a primary road from/to a primary road or lower class highway.",
+                "secondary_link": "The link roads (sliproads/ramps) leading to/from a secondary road from/to a secondary road or lower class highway.",
+                "tertiary_link": "The link roads (sliproads/ramps) leading to/from a tertiary road from/to a tertiary road or lower class highway.",
+                "bus_guideway": "A busway where the vehicle guided by the way (though not a railway) and is not suitable for other traffic. Please note: this is not a normal bus lane, use access=no, psv=yes instead! If the buses are not guided, consider highway=busway.",
+                "escape": "For runaway truck ramps, runaway truck lanes, emergency escape ramps, or truck arrester beds. It enables vehicles with braking failure to safely stop.",
+                "raceway": "A course or track for (motor) racing.",
+                "road": "A road/way/street/motorway/etc. of unknown type. It can stand for anything ranging from a footpath to a motorway.",
+                "busway": "A dedicated roadway for bus rapid transit systems"}
     
     H_TIERS = {**H_TIER_1, **H_TIER_2, **H_TIER_3, **H_TIER_4}
 
