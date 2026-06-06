@@ -105,6 +105,8 @@ async def get_details(
                 "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights."}
     H_TIER_4 = {"steps": "For flights of steps (stairs) on footways.", 
                 "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing."}
+    
+    H_TIERS = {**H_TIER_1, **H_TIER_2, **H_TIER_3, **H_TIER_4}
 
     # sidewalk types
     S_TIER_1 = {"both": "Both sides of the street have sidewalks."}
@@ -115,8 +117,15 @@ async def get_details(
     S_TIER_3 = {"lane": "Either both sides or one side of this street have a lane dedicated for pedestrian movement."}
     S_TIER_4 = {"no": "There is no sidewalk at all.", 
                 "none": "There is no sidewalk at all.",}
+    
+    S_TIERS = {**S_TIER_1, **S_TIER_2, **S_TIER_3, **S_TIER_4}
 
     for obj in geo_objects:
+
+        obj["highway_caption"] = H_TIERS.get(obj["highway_type"], "unknown")
+        obj["sidewalk_caption"] = S_TIERS.get(obj["sidewalk"], "unknown")
+
+
         if obj["highway_type"] in H_TIER_1 or obj["sidewalk"] in S_TIER_1 or obj["sidewalk_right"] in S_TIER_1 or obj["sidewalk_left"] in S_TIER_1 or obj["sidewalk_both"] in S_TIER_1:
             obj["score"] = 1
         elif obj["highway_type"] in H_TIER_2 or obj["sidewalk"] in S_TIER_2 or obj["sidewalk_right"] in S_TIER_2 or obj["sidewalk_left"] in S_TIER_2 or obj["sidewalk_both"] in S_TIER_2:
