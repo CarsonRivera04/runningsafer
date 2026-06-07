@@ -21,7 +21,7 @@ export const DetailedView = ({
 }) => {
     return ( 
         <div className="w-full py-20 px-4 sm:px-6lg:py-40">
-            <Feature1 polyline={activity.summary_polyline} mapDetails={mapDetails} />
+            <Feature1 polyline={activity.summary_polyline} mapDetails={mapDetails} activity={activity}/>
             <h1>{activity.name}</h1>
             <p>Type: {activity.type}</p>
             <p>Distance: {(activity.distance / 1000).toFixed(2)} km</p>
