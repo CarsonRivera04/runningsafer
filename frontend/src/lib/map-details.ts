@@ -35,18 +35,12 @@ export const getColorByScore = (score: number): string => {
 };
 
 export const getMapMarkers = (mapDetails: MapDetail[], markerLimit = 10): MapMarker[] => {
-  const markerCount = Math.min(markerLimit, mapDetails.length);
-
-  if (markerCount === 0) {
-    return [];
-  }
-
-  const step = mapDetails.length / markerCount;
-
-  return Array.from({ length: markerCount }, (_, i) => {
-    const targetIndex = Math.floor(i * step);
-    const { closest_lat, closest_lon, score } = mapDetails[targetIndex];
-
-    return { closest_lat, closest_lon, score };
-  });
+  return [...mapDetails]
+    .sort((a, b) => b.score - a.score)
+    .slice(0, markerLimit)
+    .map(({ closest_lat, closest_lon, score }) => ({
+      closest_lat,
+      closest_lon,
+      score,
+    }));
 };
