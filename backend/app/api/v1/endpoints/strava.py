@@ -94,38 +94,55 @@ async def get_details(
         })
 
     # highway types 
-    H_TIER_1 = {"corridor": "For a hallway inside of a building.", 
-                "pedestrian": "For roads used mainly/exclusively for pedestrians in shopping and some residential areas which may allow access by motorised vehicles only for very limited periods of the day.", 
-                "footway" : "For designated footpaths; i.e., mainly/exclusively for pedestrians. This includes walking tracks and gravel paths.", 
+    H_TIER_1 = {"corridor": "For a hallway inside of a building.",
                 "sidewalk": "Sidewalk that runs typically along residential road."}
-    H_TIER_2 = {"living_street": "For living streets, which are residential streets where pedestrians have legal priority over cars, speeds are kept very low.", 
+    H_TIER_2 = {"footway": "For designated footpaths; i.e., mainly/exclusively for pedestrians. This includes walking tracks and gravel paths.",
+                "pedestrian": "For roads used mainly/exclusively for pedestrians in shopping and some residential areas which may allow access by motorised vehicles only for very limited periods of the day.",
+                "traffic_island": "The way between two crossings, safespot for pedestrians.",
+                "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights."}
+    H_TIER_3 = {"living_street": "For living streets, which are residential streets where pedestrians have legal priority over cars, speeds are kept very low.",
                 "bridleway": "For horse riders. Pedestrians are usually also permitted, cyclists may be permitted depending on local rules/laws. Motor vehicles are forbidden.",
-                "residential": "Roads which serve as an access to housing, without function of connecting settlements. Often lined with housing.",
-                "track": "Roads for mostly agricultural or forestry uses."}
-    H_TIER_3 = {"path": "A non-specific path.", 
-                "traffic_island": "The way between two crossings, safespot for pedestrians.", 
-                "crossing": "Crosswalk that connects two sidewalks on the opposite side of the road. Often recognized by painted markings on the road, road sign or traffic lights.",
-                "tertiary": "The next most important roads in a country's system. (Often link smaller towns and villages) ",
-                "unclassified": "The least important through roads in a country's system – i.e. minor roads of a lower classification than tertiary, but which serve a purpose other than access to properties. (Often link villages and hamlets.)",
+                "path": "A non-specific path.",
+                "cycleway": "For designated cycleways."}
+    H_TIER_4 = {"residential": "Roads which serve as an access to housing, without function of connecting settlements. Often lined with housing.",
+                "track": "Roads for mostly agricultural or forestry uses.",
                 "service": "For access roads to, or within an industrial estate, camp site, business park, car park, alleys, etc."}
-    H_TIER_4 = {"steps": "For flights of steps (stairs) on footways.", 
-                "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing.",
-                "motorway": "A restricted access major divided highway, normally with 2 or more running lanes plus emergency hard shoulder. Equivalent to the Freeway, Autobahn, etc..",
-                "trunk": "The most important roads in a country's system that aren't motorways. (Need not necessarily be a divided highway.)",
-                "primary": "The next most important roads in a country's system. (Often link larger towns.)",
-                "secondary": "The next most important roads in a country's system. (Often link towns.)",
-                "motorway_link": "The link roads (sliproads/ramps) leading to/from a motorway from/to a motorway or lower class highway. Normally with the same motorway restrictions.",
-                "trunk_link": "The link roads (sliproads/ramps) leading to/from a trunk road from/to a trunk road or lower class highway.",
-                "primary_link": "The link roads (sliproads/ramps) leading to/from a primary road from/to a primary road or lower class highway.",
-                "secondary_link": "The link roads (sliproads/ramps) leading to/from a secondary road from/to a secondary road or lower class highway.",
-                "tertiary_link": "The link roads (sliproads/ramps) leading to/from a tertiary road from/to a tertiary road or lower class highway.",
-                "bus_guideway": "A busway where the vehicle guided by the way (though not a railway) and is not suitable for other traffic. Please note: this is not a normal bus lane, use access=no, psv=yes instead! If the buses are not guided, consider highway=busway.",
-                "escape": "For runaway truck ramps, runaway truck lanes, emergency escape ramps, or truck arrester beds. It enables vehicles with braking failure to safely stop.",
-                "raceway": "A course or track for (motor) racing.",
-                "road": "A road/way/street/motorway/etc. of unknown type. It can stand for anything ranging from a footpath to a motorway.",
-                "busway": "A dedicated roadway for bus rapid transit systems"}
-    
-    H_TIERS = {**H_TIER_1, **H_TIER_2, **H_TIER_3, **H_TIER_4}
+    H_TIER_5 = {"steps": "For flights of steps (stairs) on footways.",
+                "unclassified": "The least important through roads in a country's system - i.e. minor roads of a lower classification than tertiary, but which serve a purpose other than access to properties. (Often link villages and hamlets.)"}
+    H_TIER_6 = {"tertiary": "The next most important roads in a country's system. (Often link smaller towns and villages)",
+                "tertiary_link": "The link roads (sliproads/ramps) leading to/from a tertiary road from/to a tertiary or lower class highway."}
+    H_TIER_7 = {"secondary": "The next most important roads in a country's system. (Often link towns.)",
+                "secondary_link": "The link roads (sliproads/ramps) leading to/from a secondary road from/to a secondary or lower class highway.",
+                "busway": "A dedicated roadway for bus rapid transit systems",
+                "bus_guideway": "A busway where the vehicle guided by the way (though not a railway) and is not suitable for other traffic. Please note: this is not a normal bus lane, use access=no, psv=yes instead! If the buses are not guided, consider highway=busway."}
+    H_TIER_8 = {"primary": "The next most important roads in a country's system. (Often link larger towns.)",
+                "primary_link": "The link roads (sliproads/ramps) leading to/from a primary road from/to a primary or lower class highway.",
+                "road": "A road/way/street/motorway/etc. of unknown type. It can stand for anything ranging from a footpath to a motorway."}
+    H_TIER_9 = {"trunk": "The most important roads in a country's system that aren't motorways. (Need not necessarily be a divided highway.)",
+                "trunk_link": "The link roads (sliproads/ramps) leading to/from a trunk road from/to a trunk or lower class highway.",
+                "escape": "For runaway truck ramps, runaway truck lanes, emergency escape ramps, or truck arrester beds. It enables vehicles with braking failure to safely stop."}
+    H_TIER_10 = {"motorway": "A restricted access major divided highway, normally with 2 or more running lanes plus emergency hard shoulder. Equivalent to the Freeway, Autobahn, etc..",
+                 "motorway_link": "The link roads (sliproads/ramps) leading to/from a motorway from/to a motorway or lower class highway. Normally with the same motorway restrictions.",
+                 "raceway": "A course or track for (motor) racing.",
+                 "via_ferrata": "A via ferrata is a route equipped with fixed cables, stemples, ladders, and bridges in order to increase ease and security for climbers. These via ferrata require equipment : climbing harness, shock absorber and two short lengths of rope, but do not require a long rope as for climbing."}
+
+    H_TIER_GROUPS = [
+        H_TIER_1,
+        H_TIER_2,
+        H_TIER_3,
+        H_TIER_4,
+        H_TIER_5,
+        H_TIER_6,
+        H_TIER_7,
+        H_TIER_8,
+        H_TIER_9,
+        H_TIER_10,
+    ]
+    H_TIERS = {
+        highway_type: caption
+        for tier in H_TIER_GROUPS
+        for highway_type, caption in tier.items()
+    }
 
     # sidewalk types
     S_TIER_1 = {"both": "Both sides of the street have sidewalks."}
@@ -139,20 +156,50 @@ async def get_details(
     
     S_TIERS = {**S_TIER_1, **S_TIER_2, **S_TIER_3, **S_TIER_4}
 
+    def tier_score(value, tier_groups, default_score):
+        for index, tier in enumerate(tier_groups, start=1):
+            if value in tier:
+                return index
+
+        return default_score
+
+    def sidewalk_score(value):
+        if value in S_TIER_1:
+            return 1
+        if value in S_TIER_2:
+            return 2
+        if value in S_TIER_3:
+            return 6
+        if value in S_TIER_4:
+            return 10
+
+        return None
+
     for obj in geo_objects:
 
         obj["highway_caption"] = H_TIERS.get(obj["highway_type"], "unknown")
         obj["sidewalk_caption"] = S_TIERS.get(obj["sidewalk"], "unknown")
 
+        highway_score = tier_score(obj["highway_type"], H_TIER_GROUPS, 10)
+        sidewalk_scores = [
+            score
+            for score in (
+                sidewalk_score(obj["sidewalk"]),
+                sidewalk_score(obj["sidewalk_right"]),
+                sidewalk_score(obj["sidewalk_left"]),
+                sidewalk_score(obj["sidewalk_both"]),
+            )
+            if score is not None
+        ]
 
-        if obj["highway_type"] in H_TIER_1 or obj["sidewalk"] in S_TIER_1 or obj["sidewalk_right"] in S_TIER_1 or obj["sidewalk_left"] in S_TIER_1 or obj["sidewalk_both"] in S_TIER_1:
-            obj["score"] = 1
-        elif obj["highway_type"] in H_TIER_2 or obj["sidewalk"] in S_TIER_2 or obj["sidewalk_right"] in S_TIER_2 or obj["sidewalk_left"] in S_TIER_2 or obj["sidewalk_both"] in S_TIER_2:
-            obj["score"] = 2 
-        elif obj["highway_type"] in H_TIER_3 or obj["sidewalk"] in S_TIER_3 or obj["sidewalk_right"] in S_TIER_3 or obj["sidewalk_left"] in S_TIER_3 or obj["sidewalk_both"] in S_TIER_3:
-            obj["score"] = 3 
-        else: 
-            obj["score"] = 4
+        safest_sidewalk_score = min(sidewalk_scores, default=highway_score)
+        most_concerning_sidewalk_score = max(sidewalk_scores, default=highway_score)
+
+        obj["score"] = (
+            max(highway_score, most_concerning_sidewalk_score)
+            if most_concerning_sidewalk_score == 10
+            else min(highway_score, safest_sidewalk_score)
+        )
     
     return geo_objects
 
