@@ -21,14 +21,16 @@ export const DetailedView = ({
     activity: Activity;
     mapDetails: MapDetail[];
 }) => {
+    const sortedMapDetails = [...mapDetails].sort((a, b) => b.score - a.score);
+
     return ( 
         <div className="w-full py-20 px-4 sm:px-6lg:py-40">
             <Feature1 polyline={activity.summary_polyline} mapDetails={mapDetails} activity={activity}/>
             <section className="mt-8">
                 <h2 className="text-2xl font-bold mb-4">Map Safety Details</h2>
-                {mapDetails.length ? (
+                {sortedMapDetails.length ? (
                     <ul className="space-y-4">
-                        {mapDetails.map((detail, index) => (
+                        {sortedMapDetails.map((detail, index) => (
                             <li
                                 key={`${detail.closest_lat}-${detail.closest_lon}-${index}`}
                                 className="overflow-hidden rounded-md border bg-white"
