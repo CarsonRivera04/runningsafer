@@ -1,5 +1,4 @@
 import { Feature1 } from "@/components/ui/feature1";
-import { formatMinutesSeconds } from "@/lib/format-activity";
 import type { MapDetail } from "@/lib/map-details";
 import { getColorByScore } from "@/lib/map-details";
 
@@ -32,13 +31,23 @@ export const DetailedView = ({
                         {mapDetails.map((detail, index) => (
                             <li
                                 key={`${detail.closest_lat}-${detail.closest_lon}-${index}`}
-                                className="border rounded-md p-4"
-                                style={{ backgroundColor: getColorByScore(detail.score) }}
+                                className="overflow-hidden rounded-md border bg-white"
                             >
-                                <h3 className="font-semibold">{detail.name}</h3>
-                                <p>Safety Score: {detail.score}</p>
-                                <p>Road Type: {detail.highway_type}</p>
-                                {detail.highway_caption && <p>{detail.highway_caption}</p>}
+                                <details>
+                                    <summary className="flex cursor-pointer list-none items-center gap-3 p-4 font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
+                                        <span
+                                            className="h-4 w-4 shrink-0 rounded-full border border-black/15"
+                                            style={{ backgroundColor: getColorByScore(detail.score) }}
+                                            aria-label={`Safety score ${detail.score} color`}
+                                        />
+                                        <span>{detail.name || "Unnamed street"}</span>
+                                    </summary>
+                                    <div className="space-y-2 border-t px-4 py-3 text-sm">
+                                        <p>Safety Score: {detail.score}</p>
+                                        <p>Road Type: {detail.highway_type}</p>
+                                        {detail.highway_caption && <p>{detail.highway_caption}</p>}
+                                    </div>
+                                </details>
                             </li>
                         ))}
                     </ul>
