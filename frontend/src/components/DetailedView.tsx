@@ -1,4 +1,5 @@
 import { Feature1 } from "@/components/ui/feature1";
+import { formatMinutesSeconds } from "@/lib/format-activity";
 import type { MapDetail } from "@/lib/map-details";
 export interface Activity {
     id: number;
@@ -25,8 +26,8 @@ export const DetailedView = ({
             <h1>{activity.name}</h1>
             <p>Type: {activity.type}</p>
             <p>Distance: {(activity.distance / 1000).toFixed(2)} km</p>
-            <p>Moving Time: {(activity.moving_time / 60).toFixed(2)} minutes</p>
-            <p>Elapsed Time: {(activity.elapsed_time / 60).toFixed(2)} minutes</p>
+            <p>Moving Time: {formatMinutesSeconds(activity.moving_time)}</p>
+            <p>Elapsed Time: {formatMinutesSeconds(activity.elapsed_time)}</p>
             <p>Start Date: {new Date(activity.start_date).toLocaleString()}</p>
             <p>Summary Polyline: {activity.summary_polyline}</p>
             <p>Coordinates: {JSON.stringify(activity.coordinates)}</p>

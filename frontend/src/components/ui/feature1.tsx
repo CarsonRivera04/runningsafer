@@ -1,8 +1,9 @@
-import { Check, ChartNoAxesColumnIncreasing } from "lucide-react";
+import { ChartNoAxesColumnIncreasing, Hourglass, Timer } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { MoveLeft } from "lucide-react";
 import { ActivityImgAlt } from "@/components/ActivityImgAlt";
+import { formatMinutesSeconds } from "@/lib/format-activity";
 import { getMapMarkers, type MapDetail } from "@/lib/map-details";
 import { Activity } from "./feature5";
 
@@ -45,20 +46,20 @@ export const Feature1 = ({
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+                <Hourglass className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Fast and reliable</p>
+                <p>Moving time / Elapsed time</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it fast and reliable.
+                  {formatMinutesSeconds(activity.moving_time)} / {formatMinutesSeconds(activity.elapsed_time)}
                 </p>
               </div>
             </div>
             <div className="flex flex-row gap-6 items-start">
-                <Check className="w-4 h-4 mt-2 text-primary" />
+                <Timer className="w-4 h-4 mt-2 text-primary" />
               <div className="flex flex-col gap-1">
-                <p>Beautiful and modern</p>
+                <p>Pace (min/km / min/mi)</p>
                 <p className="text-muted-foreground text-sm">
-                  We&apos;ve made it beautiful and modern.
+                  {formatMinutesSeconds(activity.moving_time / (activity.distance / 1000))} min/km / {formatMinutesSeconds(activity.moving_time / (activity.distance / 1609.34))} min/mi
                 </p>
               </div>
             </div>
