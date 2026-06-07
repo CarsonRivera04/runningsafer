@@ -57,7 +57,6 @@ async function ActivitiesSection({
   return (
     <>
       <Feature5 activities={activityData} page={page} perPage={perPage} name={name} />
-      <div><TestCard data={activityData} /></div>
     </>
   );
 }
