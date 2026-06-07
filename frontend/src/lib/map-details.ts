@@ -24,11 +24,23 @@ export const getColorByScore = (score: number): string => {
     case 1:
       return "#10B981";
     case 2:
-      return "#FBBF24";
+      return "#34D399";
     case 3:
-      return "#F97316";
+      return "#84CC16";
     case 4:
+      return "#FACC15";
+    case 5:
+      return "#FBBF24";
+    case 6:
+      return "#FB923C";
+    case 7:
+      return "#F97316";
+    case 8:
       return "#EF4444";
+    case 9:
+      return "#DC2626";
+    case 10:
+      return "#991B1B";
     default:
       return "#808080";
   }
