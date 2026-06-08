@@ -54,7 +54,11 @@ export const DetailedView = ({
                         ))}
                     </ul>
                 ) : (
-                    <p>No map details found for this activity.</p>
+                    <div>
+                        <p>No map details available for this activity.</p>
+                        <p>The Overpass API required to show map safety details is experiencing too many requests.</p>
+                        <p>Please try again later. </p>
+                    </div>
                 )}
             </section>
         </div>
