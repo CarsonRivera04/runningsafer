@@ -1,8 +1,7 @@
 import { ActivityImg } from "@/components/ActivityImg";
 import { ActivityPagination } from "@/components/ui/activity-pagination";
 import { LoaderCircle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import { ReportLinkButton } from "@/components/ui/report-link-button";
 
 export interface Activity {
     id: number;
@@ -64,11 +63,7 @@ export const Feature5 = ({ activities, page, perPage, name }: Feature5Props) => 
 
                                     - {activity.type} on {new Date(activity.start_date).toLocaleDateString()}
                                 </p>
-                                <Button asChild variant="outline">
-                                    <Link href={`/activity?activityId=${activity.id}`}>
-                                        View Safety Report
-                                    </Link>
-                                </Button>
+                                <ReportLinkButton activityId={activity.id} />
                             </div>
                         ))}
                     </div>
