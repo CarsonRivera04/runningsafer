@@ -29,7 +29,7 @@ const handleLogout = async () => {
 
 return (
     <header className="w-full z-40 fixed top-0 left-0 bg-background">
-    <div className="container relative mx-auto min-h-20 flex gap-4 flex-row items-center justify-between px-4 sm:px-6">
+    <div className="container relative mx-auto min-h-20 grid grid-cols-3 items-center px-4 sm:px-6">
         <nav className="flex items-center gap-2">
             {navigationItems.map((item) => (
                 <Link
@@ -41,6 +41,9 @@ return (
                 </Link>
             ))}
         </nav>
+        <div className="flex justify-center">
+            <p className="font-semibold">TWBlocks</p>
+        </div>
         <div className="flex justify-end gap-4">
         <Button onClick={handleLogout}>Logout</Button>
         </div>
