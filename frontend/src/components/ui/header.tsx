@@ -42,7 +42,7 @@ return (
             ))}
         </nav>
         <div className="flex justify-center">
-            <p className="font-semibold">TWBlocks</p>
+            <p className="font-semibold">Running Safer</p>
         </div>
         <div className="flex justify-end gap-4">
         <Button onClick={handleLogout}>Logout</Button>
