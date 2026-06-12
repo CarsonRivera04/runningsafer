@@ -6,6 +6,16 @@ export const Footer1 = () => {
       title: "Home",
       href: "/",
       description: "",
+      items: [
+        {
+          title: "About",
+          href: "/about"
+        }, 
+        {
+          title: "Logout",
+          href: "/logout"
+        }
+      ]
     },
     {
       title: "Product",
