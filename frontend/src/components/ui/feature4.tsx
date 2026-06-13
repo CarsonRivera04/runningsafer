@@ -14,9 +14,9 @@ const sampleActivity = {
 
 const sampleMapDetails: MapDetail[] = [
   {
-    name: "Lakefront Trail",
-    highway_type: "cycleway",
-    highway_caption: "Separated path with low vehicle exposure.",
+    name: "Albany Street",
+    highway_type: "secondary",
+    highway_caption: "The next most important roads in a country's system. (Often link towns.)",
     sidewalk: "both",
     sidewalk_caption: "Dedicated pedestrian space on both sides.",
     sidewalk_right: "yes",
@@ -25,12 +25,12 @@ const sampleMapDetails: MapDetail[] = [
     coordinates: [],
     closest_lat: 41.881,
     closest_lon: -87.616,
-    score: 2,
+    score: 7,
   },
   {
-    name: "Oak Street",
-    highway_type: "residential",
-    highway_caption: "Lower speed local road with moderate crossings.",
+    name: "Hamilton Street",
+    highway_type: "tertiary",
+    highway_caption: "The next most important roads in a country's system. (Often link smaller towns and villages)",
     sidewalk: "right",
     sidewalk_caption: "Sidewalk present on one side only.",
     sidewalk_right: "yes",
@@ -39,12 +39,12 @@ const sampleMapDetails: MapDetail[] = [
     coordinates: [],
     closest_lat: 41.883,
     closest_lon: -87.622,
-    score: 5,
+    score: 6,
   },
   {
-    name: "Market Avenue",
-    highway_type: "primary",
-    highway_caption: "Higher traffic corridor; use extra caution at intersections.",
+    name: "Johnson Drive",
+    highway_type: "tertiary",
+    highway_caption: "The next most important roads in a country's system. (Often link smaller towns and villages)",
     sidewalk: "both",
     sidewalk_caption: "Sidewalks available, but crossings are busier.",
     sidewalk_right: "yes",
@@ -53,7 +53,7 @@ const sampleMapDetails: MapDetail[] = [
     coordinates: [],
     closest_lat: 41.879,
     closest_lon: -87.629,
-    score: 8,
+    score: 6,
   },
 ];
 
