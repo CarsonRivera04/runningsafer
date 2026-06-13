@@ -9,6 +9,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
     if (!activityId) {
         return (
             <main>
+                <Header1 />
                 <div>Invalid activity ID</div>
             </main>
         );
@@ -24,6 +25,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ a
     if (!activityDetails) {
         return (
             <main>
+                <Header1 />
                 <div>Activity not found or you are not authorized to view it.</div>
             </main>
         );

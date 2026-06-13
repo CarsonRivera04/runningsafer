@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
-export const Header1 = () => {
+export const HeaderLogin1 = () => {
 const navigationItems = [
     {
     title: "Home",
@@ -14,18 +14,6 @@ const navigationItems = [
     href: "/about",
     },
 ];
-
-const handleLogout = async () => {
-    try {
-    await fetch("/api/py/auth/logout", {
-        method: "POST",
-        credentials: "include",
-        redirect: "manual",
-    });
-    } finally {
-    window.location.href = "/login";
-    }
-};
 
 return (
     <header className="w-full z-40 fixed top-0 left-0 bg-background">
@@ -43,9 +31,6 @@ return (
         </nav>
         <div className="flex justify-center">
             <p className="font-semibold">Running Safer</p>
-        </div>
-        <div className="flex justify-end gap-4">
-        <Button onClick={handleLogout}>Logout</Button>
         </div>
     </div>
     </header>
