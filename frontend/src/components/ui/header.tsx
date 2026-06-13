@@ -2,8 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export const Header1 = () => {
+const [isLoggedIn, setIsLoggedIn] = useState(false);
+
 const navigationItems = [
     {
     title: "Home",
@@ -14,6 +17,34 @@ const navigationItems = [
     href: "/about",
     },
 ];
+
+useEffect(() => {
+    let isMounted = true;
+
+    const checkAuth = async () => {
+    try {
+        const response = await fetch("/api/py/auth/me", {
+        method: "GET",
+        credentials: "include",
+        cache: "no-store",
+        });
+
+        if (isMounted) {
+        setIsLoggedIn(response.ok);
+        }
+    } catch {
+        if (isMounted) {
+        setIsLoggedIn(false);
+        }
+    }
+    };
+
+    checkAuth();
+
+    return () => {
+    isMounted = false;
+    };
+}, []);
 
 const handleLogout = async () => {
     try {
@@ -45,7 +76,7 @@ return (
             <p className="font-semibold">Running Safer</p>
         </div>
         <div className="flex justify-end gap-4">
-        <Button onClick={handleLogout}>Logout</Button>
+        {isLoggedIn && <Button onClick={handleLogout}>Logout</Button>}
         </div>
     </div>
     </header>

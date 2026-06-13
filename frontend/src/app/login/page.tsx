@@ -1,11 +1,11 @@
 import { Feature4 } from '@/components/ui/feature4';
-import { HeaderLogin1 } from '@/components/ui/header_login';
+import { Header1 } from '@/components/ui/header';
 
 export default async function Page() {
 
   return (
     <main>
-        <HeaderLogin1 />
+        <Header1/>
         <div><Feature4/></div>
     </main>
   );
