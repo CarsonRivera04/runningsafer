@@ -11,10 +11,6 @@ export const Footer1 = () => {
           title: "About",
           href: "/about"
         }, 
-        {
-          title: "Logout",
-          href: "/logout"
-        }
       ]
     }
   ];
