@@ -1,5 +1,5 @@
-import { ChartNoAxesColumnIncreasing, Hourglass, Timer } from "lucide-react";
-import Image from  "next/image";
+import { ChartNoAxesColumnIncreasing, Hourglass, ShieldCheck, Timer } from "lucide-react";
+import Image from "next/image";
 import { formatMinutesSeconds } from "@/lib/format-activity";
 import { getColorByScore, type MapDetail } from "@/lib/map-details";
 
@@ -10,6 +10,8 @@ const sampleActivity = {
   moving_time: 1624,
   elapsed_time: 1934,
   start_date: "6/7/2026, 7:30:00 PM",
+  average_safety_rank: 3.5,
+  segment_count: 52,
 };
 
 const sampleMapDetails: MapDetail[] = [
@@ -60,13 +62,16 @@ const sampleMapDetails: MapDetail[] = [
 export const Feature4 = () => (
   <div className="w-full py-20 px-4 sm:px-6 lg:py-40">
     <div className="container mx-auto">
-      <div className="flex flex-col lg:flex-row gap-10 lg:items-start">
-        <div className="flex gap-4 flex-col flex-1">
+      {/* 1. Replaced flex-row with a robust 12-column grid system */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        
+        {/* Left Column (Text & Strava Button) - Takes up 5 out of 12 columns */}
+        <div className="flex gap-4 flex-col lg:col-span-5">
           <div className="flex gap-2 flex-col">
-            <h2 className="text-xl md:text-3xl md:text-5xl tracking-tighter lg:max-w-xl font-regular text-left">
+            <h2 className="text-xl md:text-3xl lg:text-5xl tracking-tighter font-regular text-left">
               Running Safer
             </h2>
-            <p className="text-lg max-w-xl lg:max-w-sm leading-relaxed tracking-tight text-muted-foreground text-left">
+            <p className="text-lg leading-relaxed tracking-tight text-muted-foreground text-left">
               Connect your Strava account to Running Safer and get personalized safety insights based on your running and walking activities. 
             </p>
           </div>
@@ -77,17 +82,36 @@ export const Feature4 = () => (
               width={200} 
               height={50} 
               priority
-              className="w-48 h-auto"/>
+              className="w-48 h-auto"
+            />
           </a>
         </div>
-        <div className="w-full flex-[1.35] rounded-md border bg-white p-4 shadow-sm sm:p-6">
-          <div className="grid gap-6 lg:grid-cols-[1fr_220px]">
+
+        <div className="w-full lg:col-span-7 rounded-md border bg-white p-4 shadow-sm sm:p-6">
+          
+          <div className="grid gap-6 sm:grid-cols-[1fr_220px] lg:grid-cols-1 xl:grid-cols-[1fr_220px]">
             <div className="flex min-w-0 flex-col gap-5">
               <div className="flex flex-col gap-1">
                 <p className="text-sm text-muted-foreground">{sampleActivity.type} on {sampleActivity.start_date}</p>
                 <h3 className="text-2xl font-semibold tracking-tight">{sampleActivity.name}</h3>
               </div>
+              
               <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-1">
+                <div className="flex items-start gap-3">
+                  <ShieldCheck className="mt-1 size-4 shrink-0 text-primary" />
+                  <div>
+                    <p className="text-sm font-medium">Average safety rank</p>
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                      <span
+                        className="size-3 shrink-0 rounded-full border border-black/15"
+                        style={{ backgroundColor: getColorByScore(Math.round(sampleActivity.average_safety_rank)) }}
+                        aria-label={`Average safety rank ${sampleActivity.average_safety_rank} color`}
+                      />
+                      <span>{sampleActivity.average_safety_rank}/10 across {sampleActivity.segment_count} segments</span>
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="flex items-start gap-3">
                   <ChartNoAxesColumnIncreasing className="mt-1 size-4 shrink-0 text-primary" />
                   <div>
@@ -97,6 +121,7 @@ export const Feature4 = () => (
                     </p>
                   </div>
                 </div>
+                
                 <div className="flex items-start gap-3">
                   <Hourglass className="mt-1 size-4 shrink-0 text-primary" />
                   <div>
@@ -106,6 +131,7 @@ export const Feature4 = () => (
                     </p>
                   </div>
                 </div>
+                
                 <div className="flex items-start gap-3">
                   <Timer className="mt-1 size-4 shrink-0 text-primary" />
                   <div>
@@ -117,7 +143,9 @@ export const Feature4 = () => (
                 </div>
               </div>
             </div>
-            <div className="mx-auto w-full max-w-[220px] overflow-hidden rounded-md bg-muted">
+
+            {/* 3. Added 'self-start' to stop image stretching from exposing the bg-muted color underneath */}
+            <div className="mx-auto w-full max-w-[220px] self-start overflow-hidden rounded-md bg-muted">
               <Image 
                 src="/images/demo_img.png" 
                 alt="Sample Safety Map" 
@@ -128,6 +156,7 @@ export const Feature4 = () => (
               />
             </div>
           </div>
+
           <section className="mt-6">
             <h3 className="mb-3 text-lg font-semibold">Map Safety Details</h3>
             <ul className="space-y-3">
@@ -157,6 +186,7 @@ export const Feature4 = () => (
             </ul>
           </section>
         </div>
+
       </div>
     </div>
   </div>
