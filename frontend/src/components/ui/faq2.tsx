@@ -1,4 +1,4 @@
-import { Check, PhoneCall, Mail } from "lucide-react";
+import { Mail, UserSearch } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Accordion,
@@ -19,16 +19,22 @@ export const FAQ2 = () => (
                 About Running Safer
             </h4>
             <p className="text-lg leading-relaxed tracking-tight text-muted-foreground max-w-xl text-center">
-              Managing a small business today is already tough. Avoid further
-              complications by ditching outdated, tedious trade methods. Our
-              goal is to streamline SMB trade, making it easier and faster than
-              ever.
+                Running Safer is a personal project by Carson Rivera to make runners aware of
+                hazardous areas in their running routes. Strava routes are analyzed for pedestrian safety 
+                using OpenStreetMap data, and users receive a safety score for each activity.
             </p>
           </div>
           <div>
             <Button className="gap-4" variant="outline" asChild>
                 <a href="mailto:carsonrivera04@gmail.com">
-                    Any questions? Reach out <Mail className="w-4 h-4" />
+                    Email<Mail className="w-4 h-4" />
+                </a>
+            </Button>
+          </div>
+          <div>
+            <Button className="gap-4" variant="outline" asChild>
+                <a href="https://www.linkedin.com/in/carsonrivera04/" target="_blank" rel="noopener noreferrer">
+                    LinkedIn<UserSearch className="w-4 h-4" />
                 </a>
             </Button>
           </div>
