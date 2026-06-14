@@ -141,12 +141,12 @@ export const Feature4 = () => (
                       <span
                         className="size-4 shrink-0 rounded-full border border-black/15"
                         style={{ backgroundColor: getColorByScore(detail.score) }}
-                        aria-label={`Safety score ${detail.score} color`}
+                        aria-label={`Safety rank ${detail.score} color`}
                       />
                       <span>{detail.name}</span>
                     </summary>
                     <div className="space-y-2 border-t px-4 py-3 text-sm text-muted-foreground">
-                      <p>Safety Score: {detail.score}</p>
+                      <p>Safety Rank: {detail.score}/10</p>
                       <p>Road Type: {detail.highway_type}</p>
                       {detail.highway_caption && <p>{detail.highway_caption}</p>}
                       {detail.sidewalk_caption && <p>{detail.sidewalk_caption}</p>}
