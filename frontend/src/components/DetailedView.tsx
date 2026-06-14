@@ -40,12 +40,12 @@ export const DetailedView = ({
                                         <span
                                             className="h-4 w-4 shrink-0 rounded-full border border-black/15"
                                             style={{ backgroundColor: getColorByScore(detail.score) }}
-                                            aria-label={`Safety score ${detail.score} color`}
+                                            aria-label={`Safety rank ${detail.score} color`}
                                         />
                                         <span>{detail.name || "Unnamed street"}</span>
                                     </summary>
                                     <div className="space-y-2 border-t px-4 py-3 text-sm">
-                                        <p>Safety Score: {detail.score}</p>
+                                        <p>Safety Rank: {detail.score}/10</p>
                                         <p>Road Type: {detail.highway_type}</p>
                                         {detail.highway_caption && <p>{detail.highway_caption}</p>}
                                     </div>

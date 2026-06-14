@@ -1,12 +1,12 @@
-import { Feature4 } from '@/components/ui/feature4';
 import { Header1 } from '@/components/ui/header';
+import { FAQ2 } from '@/components/ui/faq2';
 
 export default async function Page() {
 
   return (
     <main>
         <Header1/>
-        <div><Feature4/></div>
+        <FAQ2/>
     </main>
   );
 }

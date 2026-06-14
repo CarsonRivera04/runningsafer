@@ -56,3 +56,15 @@ export const getMapMarkers = (mapDetails: MapDetail[], markerLimit = 10): MapMar
       score,
     }));
 };
+
+export const getAverageSafetyRank = (mapDetails: MapDetail[]): number | null => {
+  const scoredDetails = mapDetails.filter(({ score }) => Number.isFinite(score));
+
+  if (!scoredDetails.length) {
+    return null;
+  }
+
+  const totalScore = scoredDetails.reduce((total, detail) => total + detail.score, 0);
+
+  return totalScore / scoredDetails.length;
+};
