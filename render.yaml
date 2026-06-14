@@ -1,0 +1,42 @@
+services:
+  - type: web
+    name: safer-strava-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/py/health/healthcheck
+    envVars:
+      - key: SQLALCHEMY_DATABASE_URL
+        fromDatabase:
+          name: safer-strava-db
+          property: connectionString
+      - key: CLIENT_ID
+        sync: false
+      - key: CLIENT_SECRET
+        sync: false
+      - key: FRONTEND_BASE_URL
+        value: https://safer-strava-web.onrender.com
+      - key: SESSION_COOKIE_SECURE
+        value: "true"
+
+  - type: web
+    name: safer-strava-web
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: APP_BASE_URL
+        value: https://safer-strava-web.onrender.com
+      - key: NEXT_PUBLIC_APP_BASE_URL
+        value: https://safer-strava-web.onrender.com
+      - key: BACKEND_BASE_URL
+        value: https://safer-strava-api.onrender.com
+      - key: MAPBOX_ACCESS_TOKEN
+        sync: false
+
+databases:
+  - name: safer-strava-db
+    databaseName: safer_strava
+    user: safer_strava

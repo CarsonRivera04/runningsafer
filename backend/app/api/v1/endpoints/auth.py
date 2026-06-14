@@ -21,13 +21,17 @@ router = APIRouter()
 
 CLIENT_ID = os.getenv("CLIENT_ID")
 CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-REDIRECT_URI = "http://localhost:8000/api/py/auth/callback"
+FRONTEND_BASE_URL = os.getenv("FRONTEND_BASE_URL", "http://localhost:3000").rstrip("/")
+REDIRECT_URI = os.getenv(
+    "STRAVA_REDIRECT_URI",
+    f"{FRONTEND_BASE_URL}/api/py/auth/callback",
+)
 STRAVA_AUTH_URL = "https://www.strava.com/oauth/authorize"
 STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 SESSION_COOKIE_NAME = "session"
 SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true"
-FRONTEND_LOGIN_URL = "http://localhost:3000/login"
+FRONTEND_LOGIN_URL = f"{FRONTEND_BASE_URL}/login"
 
 
 
@@ -98,7 +102,7 @@ async def callback(
     db.refresh(user)
 
     # sends the browser back to your Next.js home page
-    response = RedirectResponse(url="http://localhost:3000/")
+    response = RedirectResponse(url=f"{FRONTEND_BASE_URL}/")
     session_token = create_user_session(user, db)
     
     # Store only an opaque session token in the browser. The DB stores its hash.

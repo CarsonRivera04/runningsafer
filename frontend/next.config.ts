@@ -1,29 +1,24 @@
 import type { NextConfig } from "next";
 
+const backendBaseUrl = (
+  process.env.BACKEND_BASE_URL || "http://127.0.0.1:8000"
+).replace(/\/$/, "");
+
 const nextConfig: NextConfig = {
   /* config options here */
   rewrites: async () => {
     return [
       {
         source: "/api/py/:path*",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/:path*"
-            : "/api/",
+        destination: `${backendBaseUrl}/api/py/:path*`,
       },
       {
         source: "/docs",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/docs"
-            : "/api/py/docs",
+        destination: `${backendBaseUrl}/api/py/docs`,
       },
       {
         source: "/openapi.json",
-        destination:
-          process.env.NODE_ENV === "development"
-            ? "http://127.0.0.1:8000/api/py/openapi.json"
-            : "/api/py/openapi.json",
+        destination: `${backendBaseUrl}/api/py/openapi.json`,
       },
     ];
   },

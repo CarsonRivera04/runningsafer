@@ -2,6 +2,10 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const backendBaseUrl = (
+  process.env.BACKEND_BASE_URL || "http://127.0.0.1:8000"
+).replace(/\/$/, "");
+
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -23,7 +27,7 @@ export async function proxy(request: NextRequest) {
 
     // forward the request to your FastAPI backend server directly
     try {
-      const authResponse = await fetch('http://127.0.0.1:8000/api/py/auth/me', {
+      const authResponse = await fetch(`${backendBaseUrl}/api/py/auth/me`, {
         headers: {
           'Cookie': cookieHeader // Hand off cookies so FastAPI knows who this is
         },

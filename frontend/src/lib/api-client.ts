@@ -1,14 +1,18 @@
 import { cookies } from "next/headers";
 import type { MapDetail } from "@/lib/map-details";
 
-const baseUrl = "http://localhost:3000/api/py";
+const appBaseUrl = (
+  process.env.APP_BASE_URL ||
+  process.env.NEXT_PUBLIC_APP_BASE_URL ||
+  "http://localhost:3000"
+).replace(/\/$/, "");
+const baseUrl = `${appBaseUrl}/api/py`;
 
 async function getCookieHeader() {
   return (await cookies()).toString();
 }
 
 export async function getHealthStatus() {
-  // The rewrite in next.config.ts maps /api/py to http://127.0.0.1:8000
   const res = await fetch(`${baseUrl}/health/healthcheck`, {
     cache: 'no-store' // Ensures you get fresh data on every reload
   });
