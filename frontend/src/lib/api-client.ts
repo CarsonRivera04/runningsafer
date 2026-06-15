@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import type { MapDetail } from "@/lib/map-details";
 
 const baseUrl = "http://localhost:3000/api/py";
 
@@ -44,7 +45,7 @@ export async function getCurrentUser() {
   }
 }
 
-export async function getActivityData() {
+export async function getActivityData(page: number = 1, perPage: number = 30) {
   try {
     const user = await getCurrentUser();
     if (!user.isAuthenticated) {
@@ -52,7 +53,13 @@ export async function getActivityData() {
     }
 
     const cookieHeader = await getCookieHeader();
-    const res = await fetch(`${baseUrl}/auth/activities`, {
+
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: perPage.toString(),
+    });
+
+    const res = await fetch(`${baseUrl}/strava/activities?${params.toString()}`, {
       method: 'GET', 
       cache: 'no-store',
       headers: {
@@ -66,6 +73,61 @@ export async function getActivityData() {
   }
   catch (error) {
     console.error("Failed to fetch activity data:", error);
+    throw error;
+  }
+}
+
+export async function getActivityDetails(activityId: number) {
+  try {
+    const user = await getCurrentUser();
+    if (!user.isAuthenticated) {
+      return null;
+    }
+    const cookieHeader = await getCookieHeader();
+    const res = await fetch(`${baseUrl}/strava/activities/${activityId}`, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        'accept': 'application/json',
+        Cookie: cookieHeader,
+      }
+    });
+    if (!res.ok) throw new Error("Failed to fetch activity details");
+    return res.json();
+  }
+  catch (error) {
+    console.error("Failed to fetch activity details:", error);
+    throw error;
+  }
+}
+
+export async function getMapDetails(summaryPolyline: string, radius_meters: number = 15): Promise<MapDetail[] | null> {
+  try {
+    const user = await getCurrentUser();
+    if (!user.isAuthenticated) {
+      return null;
+    }
+
+    const cookieHeader = await getCookieHeader();
+    const params = new URLSearchParams();
+    params.append('summary_polyline', summaryPolyline);
+    params.append('radius_meters', radius_meters.toString());
+    const res = await fetch(`${baseUrl}/strava/details?${params.toString()}`, {
+      method: 'GET', 
+      cache: 'no-store',
+      headers: {
+        'accept': 'application/json',
+        Cookie: cookieHeader,
+      }
+    });
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch map details");
+    }
+    return res.json();
+  }
+  catch (error) {
+    console.error("Failed to fetch map details", error);
     throw error;
   }
 }

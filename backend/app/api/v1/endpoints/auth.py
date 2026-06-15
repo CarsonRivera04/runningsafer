@@ -1,8 +1,8 @@
 import os
-import httpx
 from typing import Annotated
+import httpx
 
-from fastapi import APIRouter, HTTPException, Depends, Cookie
+from fastapi import APIRouter, HTTPException, Depends, Cookie, Query
 from fastapi.responses import RedirectResponse
 from dotenv import load_dotenv
 from sqlalchemy.orm import Session
@@ -27,6 +27,7 @@ STRAVA_TOKEN_URL = "https://www.strava.com/oauth/token"
 SESSION_COOKIE_NAME = "session"
 SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30
 SESSION_COOKIE_SECURE = os.getenv("SESSION_COOKIE_SECURE", "false").lower() == "true"
+FRONTEND_LOGIN_URL = "http://localhost:3000/login"
 
 
 
@@ -47,12 +48,16 @@ async def login():
     return RedirectResponse(url)
 
 @router.get("/callback")
-async def callback(code: str, db: Session = Depends(get_db)):
+async def callback(
+    code: Annotated[str | None, Query()] = None,
+    error: Annotated[str | None, Query()] = None,
+    db: Session = Depends(get_db),
+):
     """
     Handle the callback from Strava after user authorization.
     """
-    if not code:
-        raise HTTPException(status_code=400, detail="Authorization code not found")
+    if error or not code:
+        return RedirectResponse(url=FRONTEND_LOGIN_URL)
 
     payload = {
         "client_id": CLIENT_ID,
@@ -119,7 +124,7 @@ async def logout(
     """End the current session and clear the session cookie."""
     delete_user_session(session_token, db)
 
-    response = RedirectResponse(url="http://localhost:3000/login", status_code=302)
+    response = RedirectResponse(url=FRONTEND_LOGIN_URL, status_code=302)
     response.delete_cookie(
         key=SESSION_COOKIE_NAME,
         path="/",
@@ -145,19 +150,3 @@ async def get_current_user(
             "lastname": user.lastname
         }
     }
-
-
-@router.get("/activities")
-async def get_activities(
-    user: Annotated[User, Depends(get_authenticated_user)]
-):
-    async with httpx.AsyncClient() as client:
-        response = await client.get(
-            "https://www.strava.com/api/v3/athlete/activities",
-            headers={"Authorization": f"Bearer {user.access_token}"}
-        )
-
-    if response.status_code != 200:
-        raise HTTPException(status_code=response.status_code, detail=response.text)
-
-    return response.json()
