@@ -7,3 +7,5 @@ Running Safer is a web application designed to encourage taking safer routes on 
 
 <img width="1439" height="692" alt="image" src="https://github.com/user-attachments/assets/c5d7e12a-a18e-4013-a156-d1c2602a5f92" />
 
+## Tech Stack
+Next.js, React, TypeScript, Tailwind CSS, FastAPI, Python, PostgreSQL
